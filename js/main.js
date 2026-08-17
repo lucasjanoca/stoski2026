@@ -20,12 +20,25 @@ if (dateInput) {
   dateInput.min = localToday.toISOString().slice(0, 10);
 }
 
+let menuScrollY = 0;
+
 function setMenu(open) {
   if (!menuToggle || !nav) return;
+
+  if (open) {
+    menuScrollY = window.scrollY;
+    document.body.style.top = `-${menuScrollY}px`;
+    document.body.classList.add('menu-open');
+  } else if (document.body.classList.contains('menu-open')) {
+    document.body.classList.remove('menu-open');
+    document.body.style.top = '';
+    window.scrollTo(0, menuScrollY);
+  }
+
   nav.classList.toggle('open', open);
-  document.body.classList.toggle('menu-open', open);
   menuToggle.setAttribute('aria-expanded', String(open));
   menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  menuBackdrop?.setAttribute('tabindex', open ? '0' : '-1');
 }
 
 menuToggle?.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
