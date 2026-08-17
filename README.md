@@ -13,6 +13,7 @@ Site oficial/protótipo principal de Henrique Stoski (Stoski Films), desenvolvid
 - Envio automático da solicitação para o WhatsApp profissional +55 15 99741-1289.
 - A mensagem enviada pelo site inclui data e horário do evento para facilitar a conferência de disponibilidade.
 - Instagram oficial: @stoski_films.
+- Deploy automático preparado com GitHub Actions para GitHub Pages.
 
 ## Próximas etapas
 
