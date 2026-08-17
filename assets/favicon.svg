@@ -1,14 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
   <title id="title">Stoski Films</title>
-  <desc id="desc">Monograma SF inspirado em lente e quadro cinematográfico.</desc>
+  <desc id="desc">Símbolo de lente cinematográfica da Stoski Films.</desc>
   <defs>
-    <linearGradient id="gold" x1="12" y1="10" x2="84" y2="86" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#E2C38B"/>
-      <stop offset="1" stop-color="#A98249"/>
+    <linearGradient id="champagne" x1="18" y1="12" x2="80" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F0D7A0"/>
+      <stop offset="0.5" stop-color="#C9A86A"/>
+      <stop offset="1" stop-color="#8A6837"/>
     </linearGradient>
   </defs>
-  <rect x="5" y="5" width="86" height="86" rx="28" fill="#0B0B0B" stroke="url(#gold)" stroke-width="2"/>
-  <circle cx="48" cy="48" r="25" fill="none" stroke="#F1EDE4" stroke-opacity=".23" stroke-width="1.5"/>
-  <path d="M63 29.5c-4.2-3-9.1-4.5-14.7-4.5-8.5 0-14.7 3.8-14.7 10.1 0 5.5 4.3 8.4 12.8 10.4l5.3 1.3c5 1.2 7 2.5 7 5 0 3.3-3.4 5.4-8.8 5.4-5.9 0-11.3-2.1-15.9-6.4v9.3c4.8 3.5 10.4 5.2 16.8 5.2 9.3 0 15.5-4.2 15.5-11.1 0-5.9-4.1-9-12.8-11.1l-5.4-1.3c-4.9-1.1-6.9-2.4-6.9-4.7 0-2.9 3.1-4.8 7.9-4.8 5 0 9.6 1.8 13.9 5.4z" fill="url(#gold)"/>
-  <path d="M68.5 31h-7.2v34h7.2V51.4h11v-6.5h-11V37.5h12.8V31z" fill="#F1EDE4" fill-opacity=".84"/>
+  <rect x="5" y="5" width="86" height="86" rx="28" fill="#0A0A0A" stroke="url(#champagne)" stroke-width="2"/>
+  <circle cx="48" cy="48" r="29" fill="none" stroke="#F4EFE6" stroke-opacity=".14" stroke-width="1.4"/>
+  <path d="M48 22.5 63.4 31.4 57.8 41H38.2L48 22.5Z" fill="url(#champagne)"/>
+  <path d="M70.2 35.2v17.7l-11.1.1-9.8-17 20.9-.8Z" fill="url(#champagne)" opacity=".92"/>
+  <path d="m70.1 60.7-15.3 8.9-5.6-9.7 9.8-17 11.1 17.8Z" fill="url(#champagne)" opacity=".84"/>
+  <path d="M48 73.5 32.6 64.6l5.6-9.7h19.6L48 73.5Z" fill="url(#champagne)" opacity=".76"/>
+  <path d="M25.8 60.8V43.1l11.1-.1 9.8 17-20.9.8Z" fill="url(#champagne)" opacity=".68"/>
+  <path d="m25.9 35.3 15.3-8.9 5.6 9.7-9.8 17-11.1-17.8Z" fill="url(#champagne)" opacity=".6"/>
+  <circle cx="48" cy="48" r="8.8" fill="#0A0A0A" stroke="#F0D7A0" stroke-width="1.6"/>
+  <circle cx="48" cy="48" r="2.3" fill="#F0D7A0"/>
 </svg>
