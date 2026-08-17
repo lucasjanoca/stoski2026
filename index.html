@@ -14,6 +14,7 @@
   <title>Stoski Films | Fotografia & Filmes em Cerquilho</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/extra.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -65,8 +66,8 @@
 
       <div class="hero-content reveal">
         <p class="eyebrow">Henrique Stoski · Filmmaker · Cerquilho — SP</p>
-        <h1 id="hero-title">Histórias que você <em>sente</em> antes de entender.</h1>
-        <p class="hero-text">Fotografia, filmes e produção audiovisual com olhar autoral, movimento e emoção.</p>
+        <h1 id="hero-title" data-edit="heroTitle">Histórias que você <em>sente</em> antes de entender.</h1>
+        <p class="hero-text" data-edit="heroText">Fotografia, filmes e produção audiovisual com olhar autoral, movimento e emoção.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#trabalhos">Ver trabalhos</a>
           <a class="btn btn-ghost" href="#orcamento">Solicitar orçamento</a>
@@ -96,17 +97,17 @@
       </div>
 
       <div class="work-grid">
-        <article class="work-card work-card-large reveal" tabindex="0">
-          <div class="media-placeholder media-wedding"><span>01</span></div>
-          <div class="work-meta"><p>Filmes & Fotografia</p><h3>Histórias a dois</h3><span>Casamentos · Celebrações</span></div>
+        <article class="work-card work-card-large reveal" tabindex="0" role="button" data-project="1" aria-label="Abrir história: Histórias a dois">
+          <div class="media-placeholder media-wedding"><img class="work-image" src="assets/media/casamento.webp" alt="Casal em um registro de casamento" loading="lazy"><span>01</span></div>
+          <div class="work-meta"><p data-project-field="category">Filmes & Fotografia</p><h3 data-project-field="title">Histórias a dois</h3><span data-project-field="subtitle">Casamentos · Celebrações</span><b class="work-open">Ver história ↗</b></div>
         </article>
-        <article class="work-card reveal" tabindex="0">
-          <div class="media-placeholder media-portrait"><span>02</span></div>
-          <div class="work-meta"><p>Retratos</p><h3>Presença</h3><span>Ensaios · Pessoas</span></div>
+        <article class="work-card reveal" tabindex="0" role="button" data-project="2" aria-label="Abrir história: Presença">
+          <div class="media-placeholder media-portrait"><img class="work-image" src="assets/media/retrato.webp" alt="Retrato feminino em ensaio" loading="lazy"><span>02</span></div>
+          <div class="work-meta"><p data-project-field="category">Retratos</p><h3 data-project-field="title">Presença</h3><span data-project-field="subtitle">Ensaios · Pessoas</span><b class="work-open">Ver história ↗</b></div>
         </article>
-        <article class="work-card reveal" tabindex="0">
-          <div class="media-placeholder media-story"><span>03</span></div>
-          <div class="work-meta"><p>Histórias</p><h3>Movimento</h3><span>Eventos · Momentos</span></div>
+        <article class="work-card reveal" tabindex="0" role="button" data-project="3" aria-label="Abrir história: Movimento">
+          <div class="media-placeholder media-story"><img class="work-image" src="assets/media/evento.webp" alt="Registro audiovisual em evento" loading="lazy"><span>03</span></div>
+          <div class="work-meta"><p data-project-field="category">Histórias</p><h3 data-project-field="title">Movimento</h3><span data-project-field="subtitle">Eventos · Momentos</span><b class="work-open">Ver história ↗</b></div>
         </article>
       </div>
     </section>
@@ -125,13 +126,13 @@
 
     <section class="about section-pad" id="sobre" aria-labelledby="about-title">
       <div class="about-portrait reveal" aria-hidden="true">
-        <div class="portrait-placeholder"><img src="assets/logo-mark.svg" alt="" width="150" height="150"></div>
+        <div class="portrait-placeholder"><img class="henrique-photo" src="assets/media/henrique.webp" alt="Henrique Stoski" width="900" height="900"></div>
         <p>Henrique Stoski<br>Filmmaker</p>
       </div>
       <div class="about-copy reveal">
         <p class="section-kicker">Por trás da câmera</p>
-        <h2 id="about-title">A arte de ver diferente.</h2>
-        <p class="about-lead">Stoski Films é o olhar de Henrique Stoski sobre pessoas, encontros e histórias.</p>
+        <h2 id="about-title" data-edit="aboutTitle">A arte de ver diferente.</h2>
+        <p class="about-lead" data-edit="aboutLead">Stoski Films é o olhar de Henrique Stoski sobre pessoas, encontros e histórias.</p>
         <p>Com base em Cerquilho, São Paulo, o trabalho combina fotografia, produção e edição de vídeo para criar imagens que preservam mais do que a aparência de um momento: preservam a sensação.</p>
         <a class="text-link" href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">@stoski_films ↗</a>
       </div>
@@ -183,9 +184,24 @@
     </section>
   </main>
 
+  <dialog class="story-modal" id="story-modal" aria-labelledby="story-title">
+    <button class="story-close" type="button" aria-label="Fechar história">×</button>
+    <div class="story-media"><img id="story-image" src="" alt=""></div>
+    <div class="story-content">
+      <p class="section-kicker" id="story-category"></p>
+      <h2 id="story-title"></h2>
+      <p class="story-subtitle" id="story-subtitle"></p>
+      <p class="story-text" id="story-text"></p>
+      <div class="story-actions">
+        <a class="btn btn-primary" href="#orcamento" id="story-budget">Solicitar orçamento</a>
+        <a class="text-link" href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Ver mais no Instagram ↗</a>
+      </div>
+    </div>
+  </dialog>
+
   <footer class="site-footer">
     <div class="footer-brand"><img src="assets/logo-mark.svg" alt="" width="46" height="46"><div><strong>STOSKI FILMS</strong><span>Cerquilho · São Paulo</span></div></div>
-    <div class="footer-links"><a href="#trabalhos">Trabalhos</a><a href="#sobre">Sobre</a><a href="#orcamento">Orçamento</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
+    <div class="footer-links"><a href="#trabalhos">Trabalhos</a><a href="#sobre">Sobre</a><a href="#orcamento">Orçamento</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="admin.html" class="admin-link">Admin</a></div>
     <div class="footer-bottom"><span>© <span id="year"></span> Stoski Films.</span><span class="credit">Site por <a href="https://infotech-io.com.br" target="_blank" rel="noopener noreferrer">InfoTech.io</a></span></div>
   </footer>
 
