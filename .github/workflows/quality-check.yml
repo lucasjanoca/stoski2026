@@ -1,0 +1,40 @@
+name: Project quality check
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify required files
+        shell: bash
+        run: |
+          test -f README.md || { echo "README.md is required"; exit 1; }
+          test -f index.html || { echo "index.html is required"; exit 1; }
+          test -f .gitignore || { echo ".gitignore is required"; exit 1; }
+          test -f SECURITY.md || { echo "SECURITY.md is required"; exit 1; }
+
+      - name: Reject local configuration files
+        shell: bash
+        run: |
+          blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
+          if [ -n "$blocked" ]; then
+            echo "Local/private files must not be committed:"
+            echo "$blocked"
+            exit 1
+          fi
+
+      - name: Confirm HTML entry point
+        shell: bash
+        run: |
+          grep -qi '<html' index.html || { echo "index.html does not look like a valid HTML document"; exit 1; }
