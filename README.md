@@ -4,10 +4,12 @@ Site oficial/protótipo principal de Henrique Stoski (Stoski Films), desenvolvid
 
 ## Estado atual
 
+> Atualização 30/08/2026: posicionamento revisado para **vídeo apenas**, hero com imagem de casamento fornecida pelo cliente, copy cinematográfica e experiência de contato otimizada.
+
 - Visual baseado no primeiro protótipo aprovado pelo cliente.
 - Layout responsivo para desktop e celular.
 - Menu hambúrguer refeito para mobile, com bloqueio de rolagem e fechamento seguro.
-- Identidade em preto, marfim e champagne/dourado, pensada para fotografia e audiovisual.
+- Identidade em preto, marfim e champagne/dourado, pensada para vídeo e linguagem cinematográfica.
 - Nova marca vetorial inspirada em lente cinematográfica.
 - Formulário de orçamento com nome, WhatsApp, data, horário, cidade/local, serviço e detalhes.
 - Envio automático da solicitação para o WhatsApp profissional +55 15 99741-1289.
@@ -17,6 +19,6 @@ Site oficial/protótipo principal de Henrique Stoski (Stoski Films), desenvolvid
 
 ## Próximas etapas
 
-- Substituir os cards visuais pelas fotos e vídeos originais de alta qualidade escolhidos por Henrique.
+- Substituir/expandir os cards do portfólio pelos vídeos originais escolhidos por Henrique.
 - Conectar analytics/painel privado a um backend (ex.: Supabase) caso sejam necessárias métricas privadas sincronizadas entre dispositivos.
 - Configurar domínio e SEO local após publicação.

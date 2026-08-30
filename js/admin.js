@@ -1,20 +1,20 @@
-const SETTINGS_KEY = 'stoski_site_settings_v1';
+const SETTINGS_KEY = 'stoski_site_settings_v2';
 const ANALYTICS_KEY = 'stoski_analytics_v1';
 const SESSION_KEY = 'stoski_admin_session';
 const TEMP_USER = 'admin';
 const TEMP_PASS = '123';
 
 const DEFAULT_SETTINGS = {
-  heroTitle: 'Histórias que você <em>sente</em> antes de entender.',
-  heroText: 'Fotografia, filmes e produção audiovisual com olhar autoral, movimento e emoção.',
+  heroTitle: 'Transformo momentos em <em>filmes que ficam.</em>',
+  heroText: 'Filmes de casamento, eventos e produções audiovisuais com narrativa, ritmo e emoção.',
   aboutTitle: 'A arte de ver diferente.',
-  aboutLead: 'Stoski Films é o olhar de Henrique Stoski sobre pessoas, encontros e histórias.',
+  aboutLead: 'Stoski Films é o olhar de Henrique Stoski transformado em movimento, som e narrativa.',
   whatsapp: '5515997411289',
   instagram: 'https://www.instagram.com/stoski_films/',
   projects: {
-    '1': { title: 'Histórias a dois', category: 'Filmes & Fotografia', subtitle: 'Casamentos · Celebrações', image: 'assets/media/casamento.webp', story: 'Um registro pensado para guardar a atmosfera, os detalhes e a emoção de uma celebração a dois. Filme e fotografia se encontram para transformar o momento em memória.' },
-    '2': { title: 'Presença', category: 'Retratos', subtitle: 'Ensaios · Pessoas', image: 'assets/media/retrato.webp', story: 'Retratos com direção leve e atenção à personalidade de quem está diante da câmera. A proposta é criar imagens naturais, fortes e com identidade.' },
-    '3': { title: 'Movimento', category: 'Histórias', subtitle: 'Eventos · Momentos', image: 'assets/media/evento.webp', story: 'Cobertura audiovisual para registrar movimento, energia e os detalhes que fazem um evento ter personalidade. Uma narrativa feita para ser lembrada.' }
+    '1': { title: 'Histórias a dois', category: 'Filme de casamento', subtitle: 'Casamentos · Love stories', image: 'assets/media/hero-casamento.webp', story: 'Um filme pensado para guardar a atmosfera, os detalhes e a emoção de uma celebração a dois. A narrativa transforma cada instante em uma história para reviver.' },
+    '2': { title: 'Presença', category: 'Eventos', subtitle: 'Eventos · Celebrações', image: 'assets/media/evento.webp', story: 'Cobertura em vídeo para registrar energia, movimento e os detalhes que fazem um evento ter personalidade, com uma edição construída para manter a experiência viva.' },
+    '3': { title: 'Movimento', category: 'Conteúdo audiovisual', subtitle: 'Reels · Comercial', image: 'assets/media/retrato.webp', story: 'Vídeos curtos e produções comerciais com ritmo, linguagem visual e acabamento para comunicar uma ideia com impacto.' }
   }
 };
 
