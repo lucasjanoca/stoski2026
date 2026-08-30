@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://lucasjanoca.github.io/stoski2026/sitemap.xml

@@ -20,92 +20,75 @@ jobs:
         shell: bash
         run: |
           required=(
-            README.md
-            index.html
-            .gitignore
-            SECURITY.md
-            assets/logo-mark.svg
-            assets/favicon.svg
+            README.md index.html .gitignore SECURITY.md
+            assets/stoski-logo.svg assets/logo-mark.svg assets/favicon.svg
             assets/media/hero-casamento.webp
-            css/styles.css
-            css/extra.css
-            css/polish.css
-            js/main.js
-            js/polish.js
+            css/styles.css css/extra.css css/polish.css
+            js/main.js robots.txt sitemap.xml site.webmanifest
           )
           for file in "${required[@]}"; do
             test -f "$file" || { echo "Required file missing: $file"; exit 1; }
           done
 
-      - name: Reject private or local configuration files
+      - name: Reject private files and insecure static admin
         shell: bash
         run: |
           blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
-          if [ -n "$blocked" ]; then
-            echo "Local/private files must not be committed:"
-            echo "$blocked"
-            exit 1
-          fi
+          test -z "$blocked" || { echo "Private/local files found:"; echo "$blocked"; exit 1; }
+          test ! -f admin.html || { echo "Public static admin.html is not allowed."; exit 1; }
+          test ! -f js/admin.js || { echo "Public admin credentials logic is not allowed."; exit 1; }
 
-      - name: Reject insecure static admin prototype
-        shell: bash
-        run: |
-          test ! -f admin.html || { echo "Public static admin.html is not allowed in production."; exit 1; }
-          test ! -f js/admin.js || { echo "Public static admin credentials logic is not allowed in production."; exit 1; }
+      - name: Check JavaScript syntax
+        run: node --check js/main.js
 
-      - name: Validate local HTML references
+      - name: Audit HTML structure and local references
         shell: bash
         run: |
           python3 - <<'PY'
           from html.parser import HTMLParser
           from pathlib import Path
           from urllib.parse import urlparse
+          import re
 
-          root = Path(".")
           html = Path("index.html").read_text(encoding="utf-8")
 
-          class Parser(HTMLParser):
+          class P(HTMLParser):
               def __init__(self):
-                  super().__init__()
-                  self.refs = []
+                  super().__init__(); self.refs=[]; self.ids=[]; self.imgs=[]; self.blank=[]
               def handle_starttag(self, tag, attrs):
-                  data = dict(attrs)
-                  for key in ("src", "href"):
-                      value = data.get(key)
-                      if value:
-                          self.refs.append((tag, key, value))
+                  a=dict(attrs)
+                  if a.get("id"): self.ids.append(a["id"])
+                  for key in ("src","href"):
+                      if a.get(key): self.refs.append((tag,key,a[key]))
+                  if tag=="img": self.imgs.append(a)
+                  if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
 
-          parser = Parser()
-          parser.feed(html)
+          p=P(); p.feed(html)
+          dup={x for x in p.ids if p.ids.count(x)>1}
+          assert not dup, f"Duplicate IDs: {sorted(dup)}"
 
-          missing = []
-          for tag, key, value in parser.refs:
-              if value.startswith(("#", "http://", "https://", "mailto:", "tel:", "data:")):
-                  continue
-              clean = urlparse(value).path
-              if not clean:
-                  continue
-              target = root / clean
-              if not target.exists():
-                  missing.append(f"{tag}[{key}] -> {value}")
+          idset=set(p.ids)
+          broken=[v for _,k,v in p.refs if k=="href" and v.startswith("#") and v[1:] not in idset]
+          assert not broken, f"Broken anchors: {broken}"
 
-          if missing:
-              print("Broken local references:")
-              print("\n".join(missing))
-              raise SystemExit(1)
+          missing=[]
+          for tag,key,value in p.refs:
+              if value.startswith(("#","http://","https://","mailto:","tel:","data:")): continue
+              path=urlparse(value).path
+              if path and not Path(path).exists(): missing.append(f"{tag}[{key}] -> {value}")
+          assert not missing, "Broken local references:\n" + "\n".join(missing)
 
-          print("Local asset references OK.")
+          assert all("alt" in img for img in p.imgs), "Every image must have alt text."
+          assert all("noopener" in a.get("rel","").split() for a in p.blank), "target=_blank must use noopener."
+          assert re.search(r'<main\b', html, re.I), "Missing main landmark."
+          assert 'lang="pt-BR"' in html, "Document language must be pt-BR."
+          assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
+          print("HTML audit OK.")
           PY
 
-      - name: Confirm HTML entry point
+      - name: Check hero media quality
         shell: bash
         run: |
-          grep -qi '<html' index.html || { echo "index.html does not look like a valid HTML document"; exit 1; }
-          grep -qi '<main' index.html || { echo "index.html must contain a main landmark"; exit 1; }
-          grep -qi 'lang="pt-BR"' index.html || { echo "Document language must be pt-BR"; exit 1; }
-
-      - name: Report media sizes
-        shell: bash
-        run: |
-          echo "Media files:"
-          find assets/media -maxdepth 1 -type f -printf '%f %k KB\n' | sort
+          bytes="$(wc -c < assets/media/hero-casamento.webp)"
+          test "$bytes" -ge 50000 || { echo "Hero media is too compressed: $bytes bytes"; exit 1; }
+          echo "Hero media: $bytes bytes"

@@ -1,28 +1,27 @@
 # Stoski Films
 
-Site oficial/protótipo principal de Henrique Stoski (Stoski Films), desenvolvido pela InfoTech.io.
+Site oficial de Henrique Stoski (Stoski Films), desenvolvido pela InfoTech.io.
 
-## Estado atual
+## Produção atual
 
-> Atualização 30/08/2026: posicionamento revisado para **vídeo apenas**, hero com imagem de casamento fornecida pelo cliente, copy cinematográfica e experiência de contato otimizada.
+- Posicionamento 100% focado em **vídeo**.
+- Identidade cinematográfica em preto, marfim e champagne/dourado.
+- Marca própria com monograma **S**, abertura de câmera e referência sutil a película.
+- Hero preparado para mídia de alta resolução, com enquadramento responsivo e texto sobreposto.
+- Portfólio com histórias de casamento, eventos e conteúdo comercial.
+- Formulário de orçamento que organiza a solicitação e abre o WhatsApp profissional.
+- FAQ, processo de atendimento, CTA flutuante e acesso direto ao Instagram.
+- SEO técnico com metadados sociais, dados estruturados, canonical, sitemap e manifest.
+- Acessibilidade: skip link, foco visível, navegação por teclado, modal com retorno de foco e landmarks.
+- Performance: mídia principal priorizada, lazy loading nas demais imagens e JavaScript consolidado.
+- Deploy automático por GitHub Pages.
 
-- Visual baseado no primeiro protótipo aprovado pelo cliente.
-- Layout responsivo para desktop e celular.
-- Menu hambúrguer refeito para mobile, com bloqueio de rolagem e fechamento seguro.
-- Identidade em preto, marfim e champagne/dourado, pensada para vídeo e linguagem cinematográfica.
-- Nova marca vetorial inspirada em lente cinematográfica.
-- Formulário de orçamento com nome, WhatsApp, data, horário, cidade/local, serviço e detalhes.
-- Envio automático da solicitação para o WhatsApp profissional +55 15 99741-1289.
-- A mensagem enviada pelo site inclui data e horário do evento para facilitar a conferência de disponibilidade.
-- Instagram oficial: @stoski_films.
-- Deploy automático preparado com GitHub Actions para GitHub Pages.
+## Contatos públicos
 
-## Publicação
+- Instagram: @stoski_films
+- WhatsApp: +55 15 99741-1289
+- Região exibida no site: Cerquilho — SP e região
 
-O site é publicado automaticamente pelo GitHub Pages a cada atualização da branch `main`.
+## Qualidade
 
-## Próximas etapas
-
-- Substituir/expandir os cards do portfólio pelos vídeos originais escolhidos por Henrique.
-- Conectar analytics/painel privado a um backend (ex.: Supabase) caso sejam necessárias métricas privadas sincronizadas entre dispositivos.
-- Configurar domínio e SEO local após publicação.
+A workflow `Project quality check` valida arquivos obrigatórios, referências locais, sintaxe JavaScript, IDs, segurança básica e o posicionamento exclusivo em vídeo.

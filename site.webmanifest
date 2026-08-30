@@ -1,0 +1,17 @@
+{
+  "name": "Stoski Films",
+  "short_name": "Stoski",
+  "description": "Filmes de casamento, eventos e produções audiovisuais por Henrique Stoski.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
