@@ -4,18 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
+  <meta name="color-scheme" content="dark light">
   <meta name="description" content="Stoski Films — filmagem, edição e produção de vídeos em Cerquilho e região. Filmes de casamento, eventos e conteúdo audiovisual por Henrique Stoski.">
   <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Stoski Films">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="Stoski Films | Henrique Stoski — Videomaker em Cerquilho">
   <meta property="og:image" content="assets/media/hero-casamento.webp">
+  <meta property="og:image:alt" content="Produção audiovisual da Stoski Films">
   <meta property="og:description" content="Filmes que fazem você sentir tudo de novo. Filmagem e produção audiovisual por Henrique Stoski.">
   <meta name="twitter:card" content="summary_large_image">
   <title>Stoski Films | Videomaker em Cerquilho — SP</title>
+
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="assets/media/hero-casamento.webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/extra.css">
+  <link rel="stylesheet" href="css/polish.css">
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,6 +44,7 @@
   </script>
 </head>
 <body>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <header class="site-header" id="topo">
@@ -52,6 +62,7 @@
       <a href="#trabalhos">Portfólio</a>
       <a href="#servicos">Serviços</a>
       <a href="#sobre">Sobre</a>
+      <a href="#faq">Dúvidas</a>
       <a href="#orcamento" class="nav-cta">Contato</a>
     </nav>
     <button class="menu-backdrop" type="button" aria-label="Fechar menu" tabindex="-1"></button>
@@ -73,6 +84,11 @@
         <div class="hero-actions">
           <a class="btn btn-primary" href="#trabalhos">Ver trabalhos</a>
           <a class="btn btn-ghost" href="#orcamento">Solicitar orçamento</a>
+        </div>
+        <div class="hero-proof" aria-label="Áreas de atuação">
+          <span>Casamentos</span>
+          <span>Eventos</span>
+          <span>Conteúdo para marcas</span>
         </div>
       </div>
 
@@ -100,15 +116,15 @@
 
       <div class="work-grid">
         <article class="work-card work-card-large reveal" tabindex="0" role="button" data-project="1" aria-label="Abrir história: Histórias a dois">
-          <div class="media-placeholder media-wedding"><img class="work-image" src="assets/media/casamento.webp" alt="Cena de casamento em produção de vídeo" loading="lazy"><span>01</span></div>
+          <div class="media-placeholder media-wedding"><img class="work-image" src="assets/media/casamento.webp" alt="Cena de casamento em produção de vídeo" loading="lazy" decoding="async"><span>01</span></div>
           <div class="work-meta"><p data-project-field="category">Filme de casamento</p><h3 data-project-field="title">Histórias a dois</h3><span data-project-field="subtitle">Casamentos · Love stories</span><b class="work-open">Ver história ↗</b></div>
         </article>
         <article class="work-card reveal" tabindex="0" role="button" data-project="2" aria-label="Abrir história: Presença">
-          <div class="media-placeholder media-portrait"><img class="work-image" src="assets/media/retrato.webp" alt="Cena de produção audiovisual" loading="lazy"><span>02</span></div>
+          <div class="media-placeholder media-portrait"><img class="work-image" src="assets/media/retrato.webp" alt="Cena de produção audiovisual" loading="lazy" decoding="async"><span>02</span></div>
           <div class="work-meta"><p data-project-field="category">Eventos</p><h3 data-project-field="title">Presença</h3><span data-project-field="subtitle">Eventos · Celebrações</span><b class="work-open">Ver história ↗</b></div>
         </article>
         <article class="work-card reveal" tabindex="0" role="button" data-project="3" aria-label="Abrir história: Movimento">
-          <div class="media-placeholder media-story"><img class="work-image" src="assets/media/evento.webp" alt="Registro audiovisual em evento" loading="lazy"><span>03</span></div>
+          <div class="media-placeholder media-story"><img class="work-image" src="assets/media/evento.webp" alt="Registro audiovisual em evento" loading="lazy" decoding="async"><span>03</span></div>
           <div class="work-meta"><p data-project-field="category">Conteúdo audiovisual</p><h3 data-project-field="title">Movimento</h3><span data-project-field="subtitle">Reels · Comercial</span><b class="work-open">Ver história ↗</b></div>
         </article>
       </div>
@@ -129,9 +145,9 @@
     </section>
 
     <section class="about section-pad" id="sobre" aria-labelledby="about-title">
-      <div class="about-portrait reveal" aria-hidden="true">
-        <div class="portrait-placeholder"><img class="henrique-photo" src="assets/media/henrique.webp" alt="Henrique Stoski" width="900" height="900"></div>
-        <p>Henrique Stoski<br>Filmmaker</p>
+      <div class="about-portrait reveal">
+        <div class="portrait-placeholder"><img class="henrique-photo" src="assets/media/henrique.webp" alt="Henrique Stoski, videomaker da Stoski Films" width="900" height="900" loading="lazy" decoding="async"></div>
+        <p>Henrique Stoski<br>Videomaker</p>
       </div>
       <div class="about-copy reveal">
         <p class="section-kicker">Por trás da câmera</p>
@@ -166,6 +182,34 @@
       <p class="reveal">“Filmes para sentir tudo de novo.”</p>
     </section>
 
+    <section class="faq section-pad" id="faq" aria-labelledby="faq-title">
+      <div class="faq-inner">
+        <div class="faq-intro reveal">
+          <p class="section-kicker">Antes de chamar</p>
+          <h2 id="faq-title">Dúvidas rápidas.</h2>
+          <p>As condições finais de cada projeto são alinhadas diretamente no orçamento, de acordo com o tipo de produção.</p>
+        </div>
+        <div class="faq-list reveal">
+          <details>
+            <summary>Atende fora de Cerquilho?</summary>
+            <p>O atendimento é feito em Cerquilho e região. Para outros locais, disponibilidade e deslocamento são alinhados no orçamento.</p>
+          </details>
+          <details>
+            <summary>Como funciona o prazo de entrega?</summary>
+            <p>O prazo varia conforme o tipo e a complexidade do projeto e é informado antes da confirmação do serviço.</p>
+          </details>
+          <details>
+            <summary>Posso pedir só edição de vídeo?</summary>
+            <p>Sim. Edição profissional faz parte dos serviços e pode ser avaliada separadamente conforme o material e o resultado desejado.</p>
+          </details>
+          <details>
+            <summary>Enviar o formulário já reserva a data?</summary>
+            <p>Não. O formulário organiza as informações e abre o WhatsApp. A data só é considerada confirmada depois do alinhamento direto com Henrique.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="budget section-pad" id="orcamento" aria-labelledby="budget-title">
       <div class="budget-intro reveal">
         <p class="section-kicker">Vamos criar algo juntos?</p>
@@ -183,14 +227,14 @@
         <div class="field"><label for="name">Seu nome</label><input id="name" name="name" autocomplete="name" required placeholder="Como podemos te chamar?"><small class="error"></small></div>
         <div class="field"><label for="whatsapp">Seu WhatsApp</label><input id="whatsapp" name="whatsapp" inputmode="tel" autocomplete="tel" required placeholder="(15) 99999-9999"><small class="error"></small></div>
         <div class="form-row">
-          <div class="field"><label for="date">Data do evento</label><input id="date" name="date" type="date" required><small class="error"></small></div>
-          <div class="field"><label for="time">Horário do evento</label><input id="time" name="time" type="time" required><small class="error"></small></div>
+          <div class="field"><label for="date">Data desejada</label><input id="date" name="date" type="date"><small class="error"></small></div>
+          <div class="field"><label for="time">Horário aproximado</label><input id="time" name="time" type="time"><small class="error"></small></div>
         </div>
         <div class="field"><label for="city">Cidade / local</label><input id="city" name="city" required placeholder="Ex.: Cerquilho - SP"><small class="error"></small></div>
         <div class="field"><label for="service">O que você procura?</label><select id="service" name="service" required><option value="">Selecione</option><option>Filme de casamento</option><option>Filmagem de evento</option><option>Reels / vídeo comercial</option><option>Edição de vídeo</option><option>Outro projeto em vídeo</option></select><small class="error"></small></div>
         <div class="field"><label for="message">Conte um pouco sobre o projeto</label><textarea id="message" name="message" rows="5" placeholder="Tipo de evento, quantidade de pessoas, endereço, referências ou qualquer detalhe importante..."></textarea></div>
         <button class="btn btn-primary submit-btn" type="submit">Enviar pelo WhatsApp <span>↗</span></button>
-        <p class="form-help" id="form-help">Ao enviar, o site cria a mensagem com serviço, data, horário, local e seus dados e abre diretamente o WhatsApp profissional do Henrique.</p>
+        <p class="form-help" id="form-help">Ao enviar, o site organiza suas informações e abre diretamente o WhatsApp profissional do Henrique.</p>
         <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
       </form>
     </section>
@@ -213,7 +257,7 @@
 
   <footer class="site-footer">
     <div class="footer-brand"><img src="assets/logo-mark.svg" alt="" width="46" height="46"><div><strong>STOSKI FILMS</strong><span>Cerquilho · São Paulo</span></div></div>
-    <div class="footer-links"><a href="#trabalhos">Portfólio</a><a href="#servicos">Serviços</a><a href="#sobre">Sobre</a><a href="#orcamento">Contato</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
+    <div class="footer-links"><a href="#trabalhos">Portfólio</a><a href="#servicos">Serviços</a><a href="#sobre">Sobre</a><a href="#faq">Dúvidas</a><a href="#orcamento">Contato</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
     <div class="footer-bottom"><span>© <span id="year"></span> Stoski Films.</span><span class="credit">Site por <a href="https://infotech-io.com.br" target="_blank" rel="noopener noreferrer">InfoTech.io</a></span></div>
   </footer>
 
@@ -221,11 +265,7 @@
     <span aria-hidden="true">↗</span><strong>WhatsApp</strong>
   </a>
 
-  <aside class="cookie-banner" id="cookie-banner" hidden aria-label="Aviso de cookies">
-    <p>Usamos cookies para proteger seu acesso e medir a presença local.</p>
-    <button class="btn btn-primary" id="cookie-ok" type="button">Entendi</button>
-  </aside>
-
   <script src="js/main.js" defer></script>
+  <script src="js/polish.js" defer></script>
 </body>
 </html>
