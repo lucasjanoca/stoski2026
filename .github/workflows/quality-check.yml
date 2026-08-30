@@ -16,15 +16,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify required files
+      - name: Verify production files
         shell: bash
         run: |
-          test -f README.md || { echo "README.md is required"; exit 1; }
-          test -f index.html || { echo "index.html is required"; exit 1; }
-          test -f .gitignore || { echo ".gitignore is required"; exit 1; }
-          test -f SECURITY.md || { echo "SECURITY.md is required"; exit 1; }
+          required=(
+            README.md
+            index.html
+            .gitignore
+            SECURITY.md
+            assets/logo-mark.svg
+            assets/favicon.svg
+            assets/media/hero-casamento.webp
+            css/styles.css
+            css/extra.css
+            css/polish.css
+            js/main.js
+            js/polish.js
+          )
+          for file in "${required[@]}"; do
+            test -f "$file" || { echo "Required file missing: $file"; exit 1; }
+          done
 
-      - name: Reject local configuration files
+      - name: Reject private or local configuration files
         shell: bash
         run: |
           blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
@@ -34,7 +47,65 @@ jobs:
             exit 1
           fi
 
+      - name: Reject insecure static admin prototype
+        shell: bash
+        run: |
+          test ! -f admin.html || { echo "Public static admin.html is not allowed in production."; exit 1; }
+          test ! -f js/admin.js || { echo "Public static admin credentials logic is not allowed in production."; exit 1; }
+
+      - name: Validate local HTML references
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          root = Path(".")
+          html = Path("index.html").read_text(encoding="utf-8")
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.refs = []
+              def handle_starttag(self, tag, attrs):
+                  data = dict(attrs)
+                  for key in ("src", "href"):
+                      value = data.get(key)
+                      if value:
+                          self.refs.append((tag, key, value))
+
+          parser = Parser()
+          parser.feed(html)
+
+          missing = []
+          for tag, key, value in parser.refs:
+              if value.startswith(("#", "http://", "https://", "mailto:", "tel:", "data:")):
+                  continue
+              clean = urlparse(value).path
+              if not clean:
+                  continue
+              target = root / clean
+              if not target.exists():
+                  missing.append(f"{tag}[{key}] -> {value}")
+
+          if missing:
+              print("Broken local references:")
+              print("\n".join(missing))
+              raise SystemExit(1)
+
+          print("Local asset references OK.")
+          PY
+
       - name: Confirm HTML entry point
         shell: bash
         run: |
           grep -qi '<html' index.html || { echo "index.html does not look like a valid HTML document"; exit 1; }
+          grep -qi '<main' index.html || { echo "index.html must contain a main landmark"; exit 1; }
+          grep -qi 'lang="pt-BR"' index.html || { echo "Document language must be pt-BR"; exit 1; }
+
+      - name: Report media sizes
+        shell: bash
+        run: |
+          echo "Media files:"
+          find assets/media -maxdepth 1 -type f -printf '%f %k KB\n' | sort
