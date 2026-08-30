@@ -72,7 +72,9 @@ const siteSettings = deepMerge(DEFAULT_SETTINGS, readJson(SETTINGS_KEY, {}));
 const analytics = deepMerge({ siteVisits: 0, projects: { '1': 0, '2': 0, '3': 0 } }, readJson(ANALYTICS_KEY, {}));
 
 function saveAnalytics() {
-  localStorage.setItem(ANALYTICS_KEY, JSON.stringify(analytics));
+  try {
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(analytics));
+  } catch (_) {}
 }
 
 if (!sessionStorage.getItem('stoski_visit_counted')) {
@@ -111,7 +113,9 @@ function applySettings() {
   document.querySelectorAll('a[href*="instagram.com/stoski_films"]').forEach(a => a.href = siteSettings.instagram);
   const whatsNumber = String(siteSettings.whatsapp || DEFAULT_WHATSAPP).replace(/\D/g, '');
   const float = document.querySelector('#whatsapp-float');
-  if (float) float.href = `https://api.whatsapp.com/send?phone=${whatsNumber}&text=${encodeURIComponent('Olá, Henrique! Vi seu site e gostaria de conversar sobre um vídeo.')}`;
+  if (float) {
+    float.href = `https://api.whatsapp.com/send?phone=${whatsNumber}&text=${encodeURIComponent('Olá, Henrique! Vi seu site e gostaria de conversar sobre um vídeo.')}`;
+  }
 }
 applySettings();
 
@@ -167,15 +171,25 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
 function openStory(id) {
   const project = siteSettings.projects[id];
   if (!storyModal || !project) return;
-  document.querySelector('#story-image').src = project.image;
-  document.querySelector('#story-image').alt = project.title;
-  document.querySelector('#story-category').textContent = project.category;
-  document.querySelector('#story-title').textContent = project.title;
-  document.querySelector('#story-subtitle').textContent = project.subtitle;
-  document.querySelector('#story-text').textContent = project.story;
+  const storyImage = document.querySelector('#story-image');
+  const storyCategory = document.querySelector('#story-category');
+  const storyTitle = document.querySelector('#story-title');
+  const storySubtitle = document.querySelector('#story-subtitle');
+  const storyText = document.querySelector('#story-text');
+
+  if (storyImage) {
+    storyImage.src = project.image;
+    storyImage.alt = project.title;
+  }
+  if (storyCategory) storyCategory.textContent = project.category;
+  if (storyTitle) storyTitle.textContent = project.title;
+  if (storySubtitle) storySubtitle.textContent = project.subtitle;
+  if (storyText) storyText.textContent = project.story;
+
   analytics.projects[id] = (analytics.projects[id] || 0) + 1;
   saveAnalytics();
   storyModal.showModal();
+  storyModal.querySelector('.story-close')?.focus();
 }
 
 document.querySelectorAll('.work-card[data-project]').forEach(card => {
@@ -210,35 +224,49 @@ function validateField(field) {
   if (!wrap || !error) return true;
   let message = '';
   const value = field.value.trim();
+
   if (field.required && !value) message = 'Preencha este campo.';
-  if (field.id === 'whatsapp' && value && value.replace(/\D/g, '').length < 10) message = 'Informe um WhatsApp válido.';
+  if (field.id === 'whatsapp' && value && value.replace(/\D/g, '').length < 10) {
+    message = 'Informe um WhatsApp válido.';
+  }
+
   wrap.classList.toggle('invalid', Boolean(message));
   error.textContent = message;
   return !message;
 }
 form?.querySelectorAll('input,select,textarea').forEach(field => {
   field.addEventListener('blur', () => validateField(field));
-  field.addEventListener('input', () => { if (field.closest('.field')?.classList.contains('invalid')) validateField(field); });
+  field.addEventListener('input', () => {
+    if (field.closest('.field')?.classList.contains('invalid')) validateField(field);
+  });
 });
 
 function formatDateBR(rawDate) {
+  if (!rawDate) return '';
   const [year, month, day] = rawDate.split('-');
-  return `${day}/${month}/${year}`;
+  return year && month && day ? `${day}/${month}/${year}` : rawDate;
 }
+
 function buildWhatsAppMessage(data) {
   const lines = [
     'Olá, Henrique! Vim pelo site da *Stoski Films* e gostaria de solicitar um orçamento. 🎬',
     '',
     `*Nome:* ${data.get('name')}`,
     `*Meu WhatsApp:* ${data.get('whatsapp')}`,
-    `*Serviço:* ${data.get('service')}`,
-    `*Data do evento:* ${formatDateBR(String(data.get('date')))}`,
-    `*Horário do evento:* ${data.get('time')}`,
-    `*Cidade / local:* ${data.get('city')}`,
+    `*Serviço:* ${data.get('service')}`
   ];
+
+  const date = String(data.get('date') || '').trim();
+  const time = String(data.get('time') || '').trim();
+  const city = String(data.get('city') || '').trim();
   const details = String(data.get('message') || '').trim();
+
+  if (date) lines.push(`*Data desejada:* ${formatDateBR(date)}`);
+  if (time) lines.push(`*Horário aproximado:* ${time}`);
+  if (city) lines.push(`*Cidade / local:* ${city}`);
   if (details) lines.push(`*Detalhes:* ${details}`);
-  lines.push('', 'Gostaria de saber se você tem disponibilidade nessa data e qual seria o orçamento.');
+
+  lines.push('', 'Gostaria de saber sobre disponibilidade e orçamento para esse projeto.');
   return lines.join('\n');
 }
 
@@ -246,33 +274,20 @@ form?.addEventListener('submit', event => {
   event.preventDefault();
   const required = [...form.querySelectorAll('[required]')];
   const valid = required.map(validateField).every(Boolean);
+
   if (!valid) {
-    status.textContent = 'Revise os campos destacados antes de continuar.';
+    if (status) status.textContent = 'Revise os campos destacados antes de continuar.';
     form.querySelector('.field.invalid input, .field.invalid select, .field.invalid textarea')?.focus();
     return;
   }
-  if (!dateInput?.value || !timeInput?.value) {
-    status.textContent = 'Informe a data e o horário do evento.';
-    return;
-  }
+
   const data = new FormData(form);
   const message = buildWhatsAppMessage(data);
   const number = String(siteSettings.whatsapp || DEFAULT_WHATSAPP).replace(/\D/g, '');
   const url = `https://api.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(message)}`;
-  status.textContent = 'Abrindo o WhatsApp do Henrique com sua solicitação pronta…';
-  const popup = window.open(url, '_blank');
-  if (popup) {
-    try { popup.opener = null; } catch (_) {}
-  } else {
-    window.location.href = url;
-  }
-});
 
+  if (status) status.textContent = 'Abrindo o WhatsApp do Henrique com sua solicitação pronta…';
 
-const cookieBanner = document.querySelector('#cookie-banner');
-const cookieOk = document.querySelector('#cookie-ok');
-if (cookieBanner && !localStorage.getItem('stoski_cookie_ok_v1')) cookieBanner.hidden = false;
-cookieOk?.addEventListener('click', () => {
-  localStorage.setItem('stoski_cookie_ok_v1', '1');
-  if (cookieBanner) cookieBanner.hidden = true;
+  const popup = window.open(url, '_blank', 'noopener,noreferrer');
+  if (!popup) window.location.href = url;
 });
