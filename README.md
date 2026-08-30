@@ -17,6 +17,10 @@ Site oficial/protótipo principal de Henrique Stoski (Stoski Films), desenvolvid
 - Instagram oficial: @stoski_films.
 - Deploy automático preparado com GitHub Actions para GitHub Pages.
 
+## Publicação
+
+O site é publicado automaticamente pelo GitHub Pages a cada atualização da branch `main`.
+
 ## Próximas etapas
 
 - Substituir/expandir os cards do portfólio pelos vídeos originais escolhidos por Henrique.
