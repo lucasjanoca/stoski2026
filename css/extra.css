@@ -223,17 +223,17 @@ html{scroll-padding-top:84px}
 
 /* Brand refinements */
 .brand-full{display:flex;align-items:center;min-width:0}
-.brand-logo{display:block;width:clamp(158px,15vw,205px);height:auto;filter:drop-shadow(0 8px 22px rgba(201,168,106,.14));transition:transform .35s var(--ease),filter .35s ease}
+.brand-logo{display:block;width:clamp(174px,16.5vw,228px);height:auto;filter:drop-shadow(0 8px 22px rgba(201,168,106,.14));transition:transform .35s var(--ease),filter .35s ease}
 .brand-full:hover .brand-logo{transform:translateY(-1px) scale(1.012);filter:drop-shadow(0 10px 28px rgba(201,168,106,.25))}
 .footer-brand{display:grid;gap:10px;align-content:start}
 .footer-logo{width:min(220px,70vw);height:auto;filter:drop-shadow(0 8px 22px rgba(201,168,106,.16))}
 .footer-brand>span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#777}
-.media-story .work-image[src$="logo-mark.svg"]{object-fit:contain;padding:22%;background:radial-gradient(circle at center,rgba(201,168,106,.13),transparent 35%),#0b0b0b;filter:none}
-.story-media img[src$="logo-mark.svg"]{object-fit:contain;padding:18%;background:radial-gradient(circle at center,rgba(201,168,106,.12),transparent 38%),#090909;filter:none}
+.media-story .work-image[src*="logo-mark.svg"]{object-fit:contain;padding:22%;background:radial-gradient(circle at center,rgba(201,168,106,.13),transparent 35%),#0b0b0b;filter:none}
+.story-media img[src*="logo-mark.svg"]{object-fit:contain;padding:18%;background:radial-gradient(circle at center,rgba(201,168,106,.12),transparent 38%),#090909;filter:none}
 .social-showcase{background:#0a0a0a;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .social-showcase-inner{width:min(var(--max),100%);margin:0 auto;display:flex;align-items:end;justify-content:space-between;gap:clamp(28px,6vw,80px)}
 .social-showcase h2{font-family:"Manrope",sans-serif;font-size:clamp(36px,5.2vw,70px);font-weight:500;letter-spacing:-.045em;line-height:1;margin:8px 0 18px;max-width:13ch}
 .social-showcase p{color:#9f9991;line-height:1.75;max-width:56ch}
 .social-showcase .btn{flex:0 0 auto}
 @media(max-width:900px){.social-showcase-inner{align-items:start;flex-direction:column}.social-showcase .btn{width:100%}}
-@media(max-width:560px){.brand-logo{width:156px}.site-header{padding-inline:18px}}
+@media(max-width:560px){.brand-logo{width:166px}.site-header{padding-inline:18px}}
