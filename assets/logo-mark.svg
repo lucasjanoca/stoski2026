@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="t d"><title id="t">Stoski Films</title><desc id="d">Monograma S com abertura de câmera e película.</desc><defs><linearGradient id="g" x1="12" y1="8" x2="84" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#F5E1B5"/><stop offset=".48" stop-color="#C9A86A"/><stop offset="1" stop-color="#846132"/></linearGradient></defs><path d="M72 19C61 9 35 11 27 24c-7 12 1 22 15 25 11 2 22 2 28 10 7 9-1 22-15 25-14 3-29-2-36-11" fill="none" stroke="url(#g)" stroke-width="8" stroke-linecap="round"/><circle cx="48" cy="49" r="13" fill="#090909" stroke="url(#g)" stroke-width="2"/><path d="M48 36l7 4 5 7-2 8-7 6-8-1-6-6-1-8 5-7z" fill="none" stroke="#F2D69D" stroke-width="2.2"/><path d="M18 66C31 62 64 63 78 72" fill="none" stroke="url(#g)" stroke-width="5" stroke-linecap="round"/><g fill="#090909"><rect x="29" y="63" width="5" height="5" rx="1"/><rect x="42" y="62" width="5" height="5" rx="1"/><rect x="55" y="64" width="5" height="5" rx="1"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title desc">
+  <title id="title">Stoski Films</title>
+  <desc id="desc">Monograma SF dourado com película cinematográfica.</desc>
+  <defs>
+    <linearGradient id="gold" x1="18" y1="16" x2="158" y2="164" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff1c9"/>
+      <stop offset=".22" stop-color="#efc375"/>
+      <stop offset=".48" stop-color="#c48632"/>
+      <stop offset=".70" stop-color="#f4d495"/>
+      <stop offset="1" stop-color="#85531f"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity=".6"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <text x="12" y="135" font-family="Georgia,'Times New Roman',serif" font-size="150" font-style="italic" fill="url(#gold)">S</text>
+    <text x="88" y="129" font-family="Georgia,'Times New Roman',serif" font-size="112" fill="url(#gold)">F</text>
+    <path d="M25 111 C47 90 82 94 98 112 C111 126 133 132 162 135" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M26 111 C48 94 81 98 96 113 C111 126 133 130 160 134" fill="none" stroke="#15100b" stroke-width="4" stroke-dasharray="5 6" stroke-linecap="round"/>
+  </g>
+</svg>
