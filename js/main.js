@@ -8,7 +8,7 @@ const PROJECTS = {
     title: 'Histórias a dois',
     category: 'Filme de casamento',
     subtitle: 'Casamentos · Love stories',
-    image: 'assets/media/hero-casamento.webp',
+    image: 'assets/media/hero-casamento.avif',
     story: 'Um filme pensado para guardar a atmosfera, os detalhes e a emoção de uma celebração a dois. A narrativa transforma cada instante em uma história para reviver.'
   },
   '2': {

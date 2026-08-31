@@ -24,6 +24,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Build premium hero asset
+        shell: bash
+        run: |
+          mkdir -p assets/media
+          cat build-assets/hero-avif/part-*.b64 | tr -d '\\n\\r ' | base64 -d > assets/media/hero-casamento.avif
+          echo "5ace78471f7c3cbff38ac07f49293ba7e77a5f88531aedac3df20f7938a6f1fc  assets/media/hero-casamento.avif" | sha256sum -c -
+
+      - name: Remove build-only sources
+        run: rm -rf build-assets
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

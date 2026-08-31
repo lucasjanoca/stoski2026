@@ -16,13 +16,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Build premium hero asset
+        shell: bash
+        run: |
+          mkdir -p assets/media
+          cat build-assets/hero-avif/part-*.b64 | tr -d '\\n\\r ' | base64 -d > assets/media/hero-casamento.avif
+          echo "5ace78471f7c3cbff38ac07f49293ba7e77a5f88531aedac3df20f7938a6f1fc  assets/media/hero-casamento.avif" | sha256sum -c -
+
       - name: Verify production files
         shell: bash
         run: |
           required=(
             README.md index.html .gitignore SECURITY.md
             assets/stoski-logo.svg assets/logo-mark.svg assets/favicon.svg
-            assets/media/hero-casamento.webp
+            assets/media/hero-casamento.avif
             css/styles.css css/extra.css css/polish.css
             js/main.js robots.txt sitemap.xml site.webmanifest
           )
@@ -33,7 +40,7 @@ jobs:
       - name: Reject private files and insecure static admin
         shell: bash
         run: |
-          blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
+          blocked="$(git ls-files | grep -E '(^|/)\\.env($|\\.)|\\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\\.local\\.js$' || true)"
           test -z "$blocked" || { echo "Private/local files found:"; echo "$blocked"; exit 1; }
           test ! -f admin.html || { echo "Public static admin.html is not allowed."; exit 1; }
           test ! -f js/admin.js || { echo "Public admin credentials logic is not allowed."; exit 1; }
@@ -76,19 +83,22 @@ jobs:
               if value.startswith(("#","http://","https://","mailto:","tel:","data:")): continue
               path=urlparse(value).path
               if path and not Path(path).exists(): missing.append(f"{tag}[{key}] -> {value}")
-          assert not missing, "Broken local references:\n" + "\n".join(missing)
+          assert not missing, "Broken local references:\\n" + "\\n".join(missing)
 
           assert all("alt" in img for img in p.imgs), "Every image must have alt text."
           assert all("noopener" in a.get("rel","").split() for a in p.blank), "target=_blank must use noopener."
-          assert re.search(r'<main\b', html, re.I), "Missing main landmark."
+          assert re.search(r'<main\\b', html, re.I), "Missing main landmark."
           assert 'lang="pt-BR"' in html, "Document language must be pt-BR."
           assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
           print("HTML audit OK.")
           PY
 
-      - name: Check hero media quality
+      - name: Check premium hero quality
         shell: bash
         run: |
-          bytes="$(wc -c < assets/media/hero-casamento.webp)"
-          test "$bytes" -ge 50000 || { echo "Hero media is too compressed: $bytes bytes"; exit 1; }
-          echo "Hero media: $bytes bytes"
+          bytes="$(wc -c < assets/media/hero-casamento.avif)"
+          test "$bytes" -ge 30000 || { echo "Hero media is too compressed: $bytes bytes"; exit 1; }
+          test "$bytes" -le 120000 || { echo "Hero media is unexpectedly heavy: $bytes bytes"; exit 1; }
+          signature="$(dd if=assets/media/hero-casamento.avif bs=1 skip=4 count=8 2>/dev/null)"
+          test "$signature" = "ftypavif" || { echo "Hero is not a valid AVIF container."; exit 1; }
+          echo "Premium hero verified: $bytes bytes"
