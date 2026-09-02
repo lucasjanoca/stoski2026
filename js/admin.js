@@ -134,8 +134,6 @@
     q('#export-btn')?.addEventListener('click', exportConfig);
     q('#import-input')?.addEventListener('change', importConfig);
     q('#reset-content-btn')?.addEventListener('click', reloadSavedConfig);
-    q('#advanced-refresh-btn')?.addEventListener('click', renderAdvancedJson);
-    q('#advanced-apply-btn')?.addEventListener('click', applyAdvancedJson);
     q('#refresh-history-btn')?.addEventListener('click', loadHistory);
     q('#add-admin-btn')?.addEventListener('click', openAdminDialog);
     q('#admin-cancel-btn')?.addEventListener('click', () => q('#admin-dialog')?.close());
@@ -306,7 +304,6 @@
     qa('[data-string-list]').forEach(renderStringList);
     qa('[data-object-list]').forEach(renderObjectList);
     updateStats();
-    if (q('.panel[data-panel-id="advanced"]')?.classList.contains('active')) renderAdvancedJson();
   }
 
   function updateStats() {
@@ -792,7 +789,7 @@
     } else {
       error.textContent = parsed.type === 'none'
         ? 'Cole ou envie um vídeo primeiro.'
-        : 'Link de vídeo inválido. Use Vimeo, YouTube ou um link direto de MP4/WebM.';
+        : 'Link de vídeo inválido. Use YouTube, Vimeo ou um link direto de MP4/WebM.';
       error.hidden = false;
     }
 
@@ -931,52 +928,11 @@
     }
   }
 
-  function renderAdvancedJson() {
-    const editor = q('#advanced-json');
-    const status = q('#advanced-status');
-    if (!editor || !config) return;
-    editor.value = JSON.stringify(config, null, 2);
-    if (status) {
-      status.textContent = 'JSON sincronizado com o rascunho atual.';
-      status.className = 'status success';
-    }
-  }
-
-  function applyAdvancedJson() {
-    const editor = q('#advanced-json');
-    const status = q('#advanced-status');
-    if (!editor) return;
-    try {
-      const parsed = JSON.parse(editor.value);
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error('A configuração principal precisa ser um objeto JSON.');
-      }
-      const encodedSize = new TextEncoder().encode(JSON.stringify(parsed)).length;
-      if (encodedSize > 900000) {
-        throw new Error('Configuração muito grande. Reduza para menos de 900 KB.');
-      }
-      config = parsed;
-      renderAll();
-      markDirty();
-      if (status) {
-        status.textContent = 'JSON válido e aplicado ao rascunho. Revise e clique em “Salvar e publicar”.';
-        status.className = 'status success';
-      }
-      showStatus('Modo avançado aplicado ao rascunho.', 'success');
-    } catch (error) {
-      if (status) {
-        status.textContent = 'Erro no JSON: ' + error.message;
-        status.className = 'status error';
-      }
-    }
-  }
-
   function activatePanel(name) {
     qa('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.panel === name));
     qa('.panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panelId === name));
     const active = q('.nav-item[data-panel="' + cssEscape(name) + '"]');
     q('#panel-title').textContent = active?.textContent.trim() || 'Painel';
-    if (name === 'advanced') renderAdvancedJson();
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
