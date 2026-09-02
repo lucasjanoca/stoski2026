@@ -380,11 +380,17 @@
           '</div>' +
           objectTextarea(path, index, 'story', 'Descrição completa', item.story, 4) +
           '<div class="upload-field compact">' +
-            '<div><span>Imagem</span><small>Use URL ou envie uma nova.</small></div>' +
+            '<div><span>Imagem de capa</span><small>Essa imagem aparece antes do vídeo.</small></div>' +
             '<input type="text" value="' + esc(item.image || '') + '" data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="image">' +
             '<label class="btn file-btn small">Enviar imagem<input type="file" accept="image/*" data-upload-object="' + esc(path) + '" data-index="' + index + '" data-key="image"></label>' +
           '</div>' +
           (item.image ? '<img class="image-preview" src="' + esc(item.image) + '" alt="Prévia do projeto">' : '') +
+          '<div class="upload-field compact video-upload-field">' +
+            '<div><span>Vídeo</span><small>Cole um link do YouTube/Vimeo ou envie MP4/WebM de até 50 MB.</small></div>' +
+            '<input type="text" value="' + esc(item.video || '') + '" placeholder="https://..." data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="video">' +
+            '<label class="btn file-btn small">Enviar vídeo<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-object="' + esc(path) + '" data-index="' + index + '" data-key="video"></label>' +
+          '</div>' +
+          (item.video ? '<div class="video-linked"><span>Vídeo configurado</span><small>O botão ▶ aparecerá nesse projeto no site.</small></div>' : '') +
         '</article>';
       }
 
@@ -530,6 +536,7 @@
       title: 'Novo projeto',
       subtitle: 'Subtítulo',
       image: 'assets/logo-mark.svg?v=20260830-logo',
+      video: '',
       story: 'Conte a história deste projeto.'
     });
     else if (path === 'faq.items') list.push({ question: 'Nova pergunta?', answer: 'Digite a resposta.' });
@@ -620,22 +627,34 @@
 
   async function uploadFile(file, targetPath, objectMeta = null) {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      showStatus('Envie apenas arquivos de imagem.', 'error');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      showStatus('A imagem deve ter no máximo 10 MB.', 'error');
+
+    const isImage = file.type.startsWith('image/');
+    const isVideo = ['video/mp4', 'video/webm'].includes(file.type);
+    if (!isImage && !isVideo) {
+      showStatus('Formato não permitido. Use imagem, MP4 ou WebM.', 'error');
       return;
     }
 
-    const ext = (file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi, '').toLowerCase();
-    const base = file.name.replace(/\.[^.]+$/, '').replace(/[^a-z0-9_-]+/gi, '-').slice(0, 70) || 'imagem';
-    const path = 'uploads/' + Date.now() + '-' + base + '.' + ext;
+    const maxBytes = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      showStatus(isVideo ? 'O vídeo deve ter no máximo 50 MB.' : 'A imagem deve ter no máximo 10 MB.', 'error');
+      return;
+    }
 
-    showStatus('Enviando imagem…', 'info', 0);
+    const ext = (file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg')).replace(/[^a-z0-9]/gi, '').toLowerCase();
+    const allowedExt = isVideo ? ['mp4','webm'] : ['jpg','jpeg','png','webp','avif'];
+    if (!allowedExt.includes(ext)) {
+      showStatus('Extensão de arquivo não permitida.', 'error');
+      return;
+    }
+
+    const base = file.name.replace(/\.[^.]+$/, '').replace(/[^a-z0-9_-]+/gi, '-').slice(0, 70) || (isVideo ? 'video' : 'imagem');
+    const folder = isVideo ? 'uploads/videos/' : 'uploads/images/';
+    const path = folder + Date.now() + '-' + base + '.' + ext;
+
+    showStatus(isVideo ? 'Enviando vídeo…' : 'Enviando imagem…', 'info', 0);
     const { error } = await client.storage.from('stoski-media').upload(path, file, {
-      cacheControl: '3600',
+      cacheControl: '86400',
       upsert: false,
       contentType: file.type
     });
@@ -664,7 +683,7 @@
     }
 
     markDirty();
-    showStatus('Imagem enviada. Clique em “Salvar e publicar” para aplicar.', 'success');
+    showStatus((isVideo ? 'Vídeo' : 'Imagem') + ' enviado. Clique em “Salvar e publicar” para aplicar.', 'success');
   }
 
   document.addEventListener('change', async event => {
