@@ -101,6 +101,25 @@
     text('.manifesto-copy p', manifesto.text);
   }
 
+  function applyShowreel(showreel = {}) {
+    text('#showreel-kicker', showreel.kicker);
+    text('#showreel-title', showreel.title);
+    text('#showreel-text', showreel.text);
+    text('#showreel-button-label', showreel.buttonLabel);
+
+    const cover = q('#showreel-cover');
+    if (cover && showreel.cover) {
+      cover.src = safeUrl(showreel.cover, cover.src);
+      cover.alt = (showreel.title || 'Showreel Stoski Films');
+    }
+
+    const button = q('#showreel-play');
+    if (button) {
+      button.hidden = !showreel.video;
+      button.setAttribute('aria-label', showreel.buttonLabel || 'Assistir showreel');
+    }
+  }
+
   function applyPortfolio(portfolio = {}, social = {}) {
     text('.work .section-kicker', portfolio.kicker);
     text('#work-title', portfolio.title);
@@ -250,6 +269,7 @@
   function applyVisibility(visibility = {}) {
     const map = {
       manifesto: '.manifesto',
+      showreel: '.showreel',
       portfolio: '.work',
       services: '.services',
       about: '.about',
@@ -285,6 +305,7 @@
     applyBrand(config.brand);
     applyHero(config.hero);
     applyManifesto(config.manifesto);
+    applyShowreel(config.showreel);
     applyPortfolio(config.portfolio, config.social);
     applyServices(config.services);
     applyAbout(config.about, config.social);
