@@ -260,6 +260,15 @@
     </section>
   </main>
 
+  <dialog class="video-modal" id="video-modal" aria-label="Reprodução de vídeo">
+    <button class="video-close" type="button" aria-label="Fechar vídeo">×</button>
+    <div class="video-stage" id="video-stage">
+      <div class="video-loading" id="video-loading" aria-live="polite">Carregando vídeo…</div>
+      <video id="portfolio-video" controls playsinline preload="metadata"></video>
+      <iframe id="portfolio-video-embed" title="Vídeo do portfólio Stoski Films" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="eager"></iframe>
+    </div>
+  </dialog>
+
   <dialog class="story-modal" id="story-modal" aria-labelledby="story-title">
     <button class="story-close" type="button" aria-label="Fechar história">×</button>
     <div class="story-media"><img id="story-image" src="" alt=""></div>
