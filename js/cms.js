@@ -266,7 +266,7 @@
     }
   }
 
-  function applyVisibility(visibility = {}) {
+  function applyVisibility(visibility = {}, config = {}) {
     const map = {
       manifesto: '.manifesto',
       showreel: '.showreel',
@@ -283,7 +283,7 @@
     Object.entries(map).forEach(([key, selector]) => {
       const el = q(selector);
       if (!el || visibility[key] === undefined) return;
-      el.hidden = visibility[key] === false;
+      el.hidden = visibility[key] === false || (key === 'showreel' && !config.showreel?.video);
     });
   }
 
@@ -316,7 +316,7 @@
     applySocial(config.social);
     applyBudget(config.budget);
     applyFooter(config.footer);
-    applyVisibility(config.visibility);
+    applyVisibility(config.visibility, config);
     window.STOSKI_CONFIG = config;
     document.dispatchEvent(new CustomEvent('stoski:config', { detail: config }));
   }
