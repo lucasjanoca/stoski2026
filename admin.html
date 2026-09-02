@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Painel ADM | Stoski Films</title>
+  <link rel="icon" href="assets/favicon.svg?v=20260830-logo" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <section class="auth-screen" id="auth-screen">
+      <div class="auth-card">
+        <a class="auth-brand" href="index.html">
+          <img src="assets/stoski-logo.svg?v=20260830-logo" alt="Stoski Films">
+        </a>
+        <p class="eyebrow">Painel administrativo</p>
+        <h1>Gerencie o site sem mexer no código.</h1>
+        <p class="auth-note">Edite textos, serviços, portfólio, imagens, contato, aparência, seções e administradores.</p>
+
+        <form id="login-form" class="auth-form">
+          <label>
+            <span>E-mail</span>
+            <input id="login-email" type="email" autocomplete="email" required placeholder="seu@email.com">
+          </label>
+          <label>
+            <span>Senha</span>
+            <input id="login-password" type="password" autocomplete="current-password" minlength="6" placeholder="Sua senha">
+          </label>
+          <button class="btn primary" type="submit">Entrar</button>
+          <div class="auth-actions">
+            <button class="link-btn" id="magic-link-btn" type="button">Receber link por e-mail</button>
+            <button class="link-btn" id="signup-btn" type="button">Criar conta</button>
+            <button class="link-btn" id="reset-btn" type="button">Esqueci a senha</button>
+          </div>
+        </form>
+        <div id="auth-status" class="status" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="unauthorized-screen hidden" id="unauthorized-screen">
+      <div class="auth-card">
+        <p class="eyebrow">Acesso restrito</p>
+        <h1>Essa conta não tem permissão.</h1>
+        <p class="auth-note">Um proprietário do painel precisa adicionar seu e-mail na área de administradores.</p>
+        <button class="btn" id="unauthorized-logout" type="button">Sair</button>
+      </div>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+          <a href="index.html" class="brand-link" target="_blank" rel="noopener">
+            <img src="assets/stoski-logo.svg?v=20260830-logo" alt="Stoski Films">
+          </a>
+          <button class="icon-btn sidebar-close" id="sidebar-close" type="button" aria-label="Fechar menu">×</button>
+        </div>
+
+        <nav class="admin-nav" id="admin-nav">
+          <button class="nav-item active" data-panel="overview" type="button">Visão geral</button>
+          <button class="nav-item" data-panel="identity" type="button">Identidade & SEO</button>
+          <button class="nav-item" data-panel="hero" type="button">Início</button>
+          <button class="nav-item" data-panel="services" type="button">Serviços</button>
+          <button class="nav-item" data-panel="portfolio" type="button">Portfólio</button>
+          <button class="nav-item" data-panel="about" type="button">Sobre</button>
+          <button class="nav-item" data-panel="differentials" type="button">Diferenciais</button>
+          <button class="nav-item" data-panel="process" type="button">Processo</button>
+          <button class="nav-item" data-panel="faq" type="button">FAQ</button>
+          <button class="nav-item" data-panel="contact" type="button">Contato & orçamento</button>
+          <button class="nav-item" data-panel="appearance" type="button">Aparência</button>
+          <button class="nav-item" data-panel="sections" type="button">Seções</button>
+          <button class="nav-item owner-only" data-panel="admins" type="button">Administradores</button>
+          <button class="nav-item" data-panel="history" type="button">Histórico</button>
+        </nav>
+
+        <div class="sidebar-foot">
+          <div class="user-chip">
+            <span id="user-name">Administrador</span>
+            <small id="user-email"></small>
+          </div>
+          <button class="btn subtle" id="logout-btn" type="button">Sair</button>
+        </div>
+      </aside>
+
+      <div class="main-area">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="icon-btn mobile-menu" id="mobile-menu" type="button" aria-label="Abrir menu">☰</button>
+            <div>
+              <p class="eyebrow">Stoski Films</p>
+              <h2 id="panel-title">Visão geral</h2>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <span class="save-indicator" id="save-indicator">Sem alterações</span>
+            <a class="btn subtle" href="index.html" target="_blank" rel="noopener">Ver site ↗</a>
+            <button class="btn primary" id="save-btn" type="button">Salvar e publicar</button>
+          </div>
+        </header>
+
+        <main class="content">
+          <div id="global-status" class="status global-status" role="status" aria-live="polite"></div>
+
+          <section class="panel active" data-panel-id="overview">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Resumo</p>
+                <h1>Controle do site inteiro em um só lugar.</h1>
+                <p>As alterações salvas entram no site automaticamente. Uma cópia da versão anterior fica no histórico.</p>
+              </div>
+            </div>
+            <div class="stats-grid">
+              <article><span>Revisão</span><strong id="stat-revision">—</strong></article>
+              <article><span>Serviços</span><strong id="stat-services">—</strong></article>
+              <article><span>Projetos</span><strong id="stat-projects">—</strong></article>
+              <article><span>FAQs</span><strong id="stat-faqs">—</strong></article>
+            </div>
+            <div class="card-grid">
+              <article class="info-card">
+                <h3>Publicação imediata</h3>
+                <p>Ao salvar, o conteúdo atualizado passa a ser lido pelo site sem precisar editar HTML manualmente.</p>
+              </article>
+              <article class="info-card">
+                <h3>Upload de imagens</h3>
+                <p>Envie imagens direto para a biblioteca da Stoski Films e use no portfólio, perfil e identidade.</p>
+              </article>
+              <article class="info-card">
+                <h3>Histórico de versões</h3>
+                <p>Cada salvamento guarda a configuração anterior para permitir restauração.</p>
+              </article>
+            </div>
+            <div class="tool-row">
+              <button class="btn" id="export-btn" type="button">Exportar configuração</button>
+              <label class="btn file-btn">Importar configuração<input id="import-input" type="file" accept="application/json"></label>
+              <button class="btn danger owner-only" id="reset-content-btn" type="button">Restaurar conteúdo salvo</button>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="identity">
+            <div class="panel-head"><div><p class="eyebrow">Marca</p><h1>Identidade & SEO</h1><p>Controle nome, logo, localização e informações exibidas em buscadores.</p></div></div>
+            <div class="form-grid two">
+              <label><span>Título da página</span><input data-path="meta.title" type="text"></label>
+              <label><span>Cor do navegador</span><input data-path="meta.themeColor" type="color"></label>
+              <label class="full"><span>Descrição para Google / compartilhamento</span><textarea data-path="meta.description" rows="4"></textarea></label>
+              <label><span>Nome da marca</span><input data-path="brand.name" type="text"></label>
+              <label><span>Localização do rodapé</span><input data-path="brand.location" type="text"></label>
+              <div class="full upload-field">
+                <div><span>Logo do site</span><small>Você pode colar uma URL ou enviar uma imagem.</small></div>
+                <input data-path="brand.logo" type="text" placeholder="assets/stoski-logo.svg">
+                <label class="btn file-btn">Enviar logo<input type="file" accept="image/*" data-upload-target="brand.logo"></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="hero">
+            <div class="panel-head"><div><p class="eyebrow">Primeira impressão</p><h1>Início do site</h1><p>Edite o texto principal, botões e destaques da primeira tela.</p></div></div>
+            <div class="form-grid two">
+              <label class="full"><span>Linha superior</span><input data-path="hero.eyebrow" type="text"></label>
+              <label><span>Título — parte normal</span><input data-path="hero.titleBefore" type="text"></label>
+              <label><span>Título — destaque</span><input data-path="hero.titleEmphasis" type="text"></label>
+              <label class="full"><span>Descrição</span><textarea data-path="hero.text" rows="4"></textarea></label>
+              <label><span>Botão principal</span><input data-path="hero.primaryLabel" type="text"></label>
+              <label><span>Destino botão principal</span><input data-path="hero.primaryHref" type="text"></label>
+              <label><span>Botão secundário</span><input data-path="hero.secondaryLabel" type="text"></label>
+              <label><span>Destino botão secundário</span><input data-path="hero.secondaryHref" type="text"></label>
+            </div>
+            <div class="section-block">
+              <div class="section-block-head"><div><h3>Destaques abaixo do título</h3><p>Ex.: Casamentos, Eventos, Conteúdo para marcas.</p></div><button class="btn small" data-add-string="hero.proof" type="button">Adicionar</button></div>
+              <div class="repeater" data-string-list="hero.proof"></div>
+            </div>
+            <div class="section-block">
+              <h3>Manifesto</h3>
+              <div class="form-grid">
+                <label><span>Chamada</span><input data-path="manifesto.kicker" type="text"></label>
+                <label><span>Título</span><input data-path="manifesto.title" type="text"></label>
+                <label><span>Texto</span><textarea data-path="manifesto.text" rows="4"></textarea></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="services">
+            <div class="panel-head">
+              <div><p class="eyebrow">Oferta</p><h1>Serviços</h1><p>Adicione, remova, renomeie e reorganize os serviços exibidos no site.</p></div>
+              <button class="btn primary" data-add-item="services.items" type="button">Adicionar serviço</button>
+            </div>
+            <div class="form-grid">
+              <label><span>Chamada</span><input data-path="services.kicker" type="text"></label>
+              <label><span>Título</span><input data-path="services.title" type="text"></label>
+              <label><span>Texto auxiliar</span><textarea data-path="services.note" rows="3"></textarea></label>
+            </div>
+            <div class="repeater cards" data-object-list="services.items" data-template="service"></div>
+          </section>
+
+          <section class="panel" data-panel-id="portfolio">
+            <div class="panel-head">
+              <div><p class="eyebrow">Trabalhos</p><h1>Portfólio</h1><p>Troque projetos, fotos, categorias e descrições que abrem no modal.</p></div>
+              <button class="btn primary" data-add-item="portfolio.items" type="button">Adicionar projeto</button>
+            </div>
+            <div class="form-grid two">
+              <label><span>Chamada</span><input data-path="portfolio.kicker" type="text"></label>
+              <label><span>Título</span><input data-path="portfolio.title" type="text"></label>
+              <label class="full"><span>Texto do link para Instagram</span><input data-path="portfolio.instagramLabel" type="text"></label>
+            </div>
+            <div class="repeater cards" data-object-list="portfolio.items" data-template="portfolio"></div>
+          </section>
+
+          <section class="panel" data-panel-id="about">
+            <div class="panel-head"><div><p class="eyebrow">Perfil</p><h1>Sobre Henrique</h1><p>Controle foto, apresentação profissional e descrição.</p></div></div>
+            <div class="form-grid two">
+              <label><span>Chamada</span><input data-path="about.kicker" type="text"></label>
+              <label><span>Título</span><input data-path="about.title" type="text"></label>
+              <label><span>Nome</span><input data-path="about.name" type="text"></label>
+              <label><span>Cargo</span><input data-path="about.role" type="text"></label>
+              <label class="full"><span>Texto de destaque</span><textarea data-path="about.lead" rows="3"></textarea></label>
+              <label class="full"><span>Texto principal</span><textarea data-path="about.text" rows="5"></textarea></label>
+              <div class="full upload-field">
+                <div><span>Foto</span><small>URL existente ou nova imagem enviada.</small></div>
+                <input data-path="about.image" type="text">
+                <label class="btn file-btn">Enviar foto<input type="file" accept="image/*" data-upload-target="about.image"></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="differentials">
+            <div class="panel-head">
+              <div><p class="eyebrow">Valor</p><h1>Diferenciais</h1><p>Controle os blocos que explicam a qualidade e o estilo do trabalho.</p></div>
+              <button class="btn primary" data-add-item="differentials" type="button">Adicionar diferencial</button>
+            </div>
+            <div class="repeater cards" data-object-list="differentials" data-template="simple"></div>
+          </section>
+
+          <section class="panel" data-panel-id="process">
+            <div class="panel-head">
+              <div><p class="eyebrow">Jornada</p><h1>Como funciona</h1><p>Edite as etapas desde o primeiro contato até a entrega.</p></div>
+              <button class="btn primary" data-add-item="process.items" type="button">Adicionar etapa</button>
+            </div>
+            <div class="form-grid two">
+              <label><span>Chamada</span><input data-path="process.kicker" type="text"></label>
+              <label><span>Título</span><input data-path="process.title" type="text"></label>
+            </div>
+            <div class="repeater cards" data-object-list="process.items" data-template="simple"></div>
+            <div class="section-block">
+              <label><span>Frase de impacto</span><input data-path="quote" type="text"></label>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="faq">
+            <div class="panel-head">
+              <div><p class="eyebrow">Dúvidas</p><h1>FAQ</h1><p>Crie quantas perguntas e respostas quiser.</p></div>
+              <button class="btn primary" data-add-item="faq.items" type="button">Adicionar pergunta</button>
+            </div>
+            <div class="form-grid">
+              <label><span>Chamada</span><input data-path="faq.kicker" type="text"></label>
+              <label><span>Título</span><input data-path="faq.title" type="text"></label>
+              <label><span>Introdução</span><textarea data-path="faq.intro" rows="3"></textarea></label>
+            </div>
+            <div class="repeater cards" data-object-list="faq.items" data-template="faq"></div>
+          </section>
+
+          <section class="panel" data-panel-id="contact">
+            <div class="panel-head"><div><p class="eyebrow">Conversão</p><h1>Contato & orçamento</h1><p>Troque Instagram, WhatsApp, textos e opções do formulário.</p></div></div>
+            <div class="form-grid two">
+              <label><span>Instagram</span><input data-path="social.instagramHandle" type="text"></label>
+              <label><span>Link do Instagram</span><input data-path="social.instagramUrl" type="url"></label>
+              <label><span>WhatsApp exibido</span><input data-path="social.whatsappDisplay" type="text"></label>
+              <label><span>WhatsApp somente números</span><input data-path="social.whatsappNumber" type="text" inputmode="numeric"></label>
+              <label><span>Chamada Instagram</span><input data-path="social.showcaseKicker" type="text"></label>
+              <label><span>Título Instagram</span><input data-path="social.showcaseTitle" type="text"></label>
+              <label class="full"><span>Texto Instagram</span><textarea data-path="social.showcaseText" rows="3"></textarea></label>
+              <label><span>Chamada orçamento</span><input data-path="budget.kicker" type="text"></label>
+              <label><span>Título orçamento</span><input data-path="budget.title" type="text"></label>
+              <label class="full"><span>Introdução orçamento</span><textarea data-path="budget.intro" rows="3"></textarea></label>
+              <label class="full"><span>Primeira mensagem enviada no WhatsApp</span><textarea data-path="budget.whatsappGreeting" rows="3"></textarea></label>
+            </div>
+            <div class="section-block">
+              <div class="section-block-head"><div><h3>Opções do formulário</h3><p>O cliente escolhe uma dessas opções ao pedir orçamento.</p></div><button class="btn small" data-add-string="budget.serviceOptions" type="button">Adicionar opção</button></div>
+              <div class="repeater" data-string-list="budget.serviceOptions"></div>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="appearance">
+            <div class="panel-head"><div><p class="eyebrow">Visual</p><h1>Aparência</h1><p>Ajuste as principais cores sem precisar editar CSS.</p></div></div>
+            <div class="color-grid">
+              <label><span>Destaque</span><input data-path="theme.accent" type="color"></label>
+              <label><span>Fundo</span><input data-path="theme.background" type="color"></label>
+              <label><span>Superfície</span><input data-path="theme.surface" type="color"></label>
+              <label><span>Texto</span><input data-path="theme.text" type="color"></label>
+              <label><span>Texto secundário</span><input data-path="theme.muted" type="color"></label>
+            </div>
+            <div class="section-block">
+              <h3>Rodapé / crédito</h3>
+              <div class="form-grid two">
+                <label><span>Copyright</span><input data-path="footer.copyright" type="text"></label>
+                <label><span>Crédito</span><input data-path="footer.creditLabel" type="text"></label>
+                <label class="full"><span>Link do crédito</span><input data-path="footer.creditUrl" type="url"></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" data-panel-id="sections">
+            <div class="panel-head"><div><p class="eyebrow">Estrutura</p><h1>Mostrar ou esconder seções</h1><p>Desative temporariamente qualquer parte sem apagar o conteúdo.</p></div></div>
+            <div class="switch-grid">
+              <label><input data-path="visibility.manifesto" type="checkbox"><span>Manifesto</span></label>
+              <label><input data-path="visibility.portfolio" type="checkbox"><span>Portfólio</span></label>
+              <label><input data-path="visibility.services" type="checkbox"><span>Serviços</span></label>
+              <label><input data-path="visibility.about" type="checkbox"><span>Sobre</span></label>
+              <label><input data-path="visibility.differentials" type="checkbox"><span>Diferenciais</span></label>
+              <label><input data-path="visibility.process" type="checkbox"><span>Processo</span></label>
+              <label><input data-path="visibility.quote" type="checkbox"><span>Frase de impacto</span></label>
+              <label><input data-path="visibility.faq" type="checkbox"><span>FAQ</span></label>
+              <label><input data-path="visibility.socialShowcase" type="checkbox"><span>Instagram</span></label>
+              <label><input data-path="visibility.budget" type="checkbox"><span>Orçamento</span></label>
+            </div>
+          </section>
+
+          <section class="panel owner-only" data-panel-id="admins">
+            <div class="panel-head">
+              <div><p class="eyebrow">Acesso</p><h1>Administradores</h1><p>Adicione o e-mail do Henrique ou de outra pessoa autorizada. Cada pessoa usa a própria conta.</p></div>
+              <button class="btn primary" id="add-admin-btn" type="button">Adicionar administrador</button>
+            </div>
+            <div class="admin-list" id="admin-list"></div>
+          </section>
+
+          <section class="panel" data-panel-id="history">
+            <div class="panel-head">
+              <div><p class="eyebrow">Segurança</p><h1>Histórico de versões</h1><p>Veja versões anteriores e restaure uma configuração se alguma alteração não ficar boa.</p></div>
+              <button class="btn" id="refresh-history-btn" type="button">Atualizar</button>
+            </div>
+            <div class="history-list" id="history-list"></div>
+          </section>
+        </main>
+      </div>
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    </section>
+  </div>
+
+  <dialog id="admin-dialog" class="modal">
+    <form method="dialog" class="modal-card" id="admin-form">
+      <div class="modal-head">
+        <div><p class="eyebrow">Permissão</p><h2>Adicionar administrador</h2></div>
+        <button class="icon-btn" value="cancel" aria-label="Fechar">×</button>
+      </div>
+      <label><span>Nome</span><input id="admin-name-input" type="text" maxlength="100"></label>
+      <label><span>E-mail</span><input id="admin-email-input" type="email" required></label>
+      <label><span>Nível</span>
+        <select id="admin-role-input">
+          <option value="editor">Editor — altera conteúdo</option>
+          <option value="owner">Proprietário — conteúdo e acessos</option>
+        </select>
+      </label>
+      <div class="modal-actions">
+        <button class="btn" value="cancel" type="button" id="admin-cancel-btn">Cancelar</button>
+        <button class="btn primary" type="submit">Adicionar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>
