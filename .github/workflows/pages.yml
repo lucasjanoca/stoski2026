@@ -24,9 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Remove build-only sources
-        run: rm -rf build-assets
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
