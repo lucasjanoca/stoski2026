@@ -933,14 +933,14 @@
     list.innerHTML = (data || []).map(item =>
       '<article class="admin-row">' +
         '<div class="admin-identity"><strong>' + esc(item.name || 'Administrador') + '</strong><span>' + esc(item.email) + '</span></div>' +
-        '<select data-admin-role="' + esc(item.id) + '" ' + (item.email.toLowerCase() === currentUser.email.toLowerCase() ? 'disabled' : '') + '>' +
+        '<select data-admin-role="' + esc(item.id) + '" ' + (item.user_id === currentUser.id ? 'disabled' : '') + '>' +
           '<option value="editor"' + (item.role === 'editor' ? ' selected' : '') + '>Editor</option>' +
           '<option value="owner"' + (item.role === 'owner' ? ' selected' : '') + '>Proprietário</option>' +
         '</select>' +
-        '<button class="btn small" type="button" data-admin-toggle="' + esc(item.id) + '" data-active="' + item.active + '" ' + (item.email.toLowerCase() === currentUser.email.toLowerCase() ? 'disabled' : '') + '>' +
+        '<button class="btn small" type="button" data-admin-toggle="' + esc(item.id) + '" data-active="' + item.active + '" ' + (item.user_id === currentUser.id ? 'disabled' : '') + '>' +
           (item.active ? 'Desativar' : 'Ativar') +
         '</button>' +
-        '<button class="icon-btn danger-icon" type="button" data-admin-delete="' + esc(item.id) + '" ' + (item.email.toLowerCase() === currentUser.email.toLowerCase() ? 'disabled' : '') + ' aria-label="Excluir">×</button>' +
+        '<button class="icon-btn danger-icon" type="button" data-admin-delete="' + esc(item.id) + '" ' + (item.user_id === currentUser.id ? 'disabled' : '') + ' aria-label="Excluir">×</button>' +
       '</article>'
     ).join('');
   }
