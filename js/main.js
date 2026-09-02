@@ -10,6 +10,7 @@ let PROJECTS = {
     category: 'Filme de casamento',
     subtitle: 'Casamentos · Love stories',
     image: 'assets/media/hero-casamento.webp',
+    video: '',
     story: 'Um filme pensado para guardar a atmosfera, os detalhes e a emoção de uma celebração a dois. A narrativa transforma cada instante em uma história para reviver.'
   },
   '2': {
@@ -17,6 +18,7 @@ let PROJECTS = {
     category: 'Eventos',
     subtitle: 'Eventos · Celebrações',
     image: 'assets/media/evento.webp',
+    video: '',
     story: 'Cobertura em vídeo para registrar energia, movimento e os detalhes que fazem um evento ter personalidade, com uma edição construída para manter a experiência viva.'
   },
   '3': {
@@ -24,6 +26,7 @@ let PROJECTS = {
     category: 'Reels & comercial',
     subtitle: 'Marcas · Conteúdo vertical',
     image: 'assets/logo-mark.svg',
+    video: '',
     story: 'Vídeos curtos e produções comerciais com ritmo, linguagem visual e acabamento para comunicar uma ideia com impacto.'
   }
 };
@@ -44,6 +47,7 @@ function applyRuntimeConfig(cfg) {
         category: item.category || '',
         subtitle: item.subtitle || '',
         image: item.image || 'assets/logo-mark.svg',
+        video: item.video || '',
         story: item.story || ''
       }];
     }));
@@ -63,6 +67,10 @@ const status = qs('#form-status');
 const dateInput = qs('#date');
 const phoneInput = qs('#whatsapp');
 const storyModal = qs('#story-modal');
+const videoModal = qs('#video-modal');
+const portfolioVideo = qs('#portfolio-video');
+const portfolioVideoEmbed = qs('#portfolio-video-embed');
+const videoLoading = qs('#video-loading');
 const progress = qs('#scroll-progress');
 let menuScrollY = 0;
 let lastStoryTrigger = null;
@@ -101,6 +109,7 @@ document.addEventListener('keydown', event => {
   if (event.key !== 'Escape') return;
   setMenu(false);
   if (storyModal?.open) storyModal.close();
+  if (videoModal?.open) videoModal.close();
 });
 
 window.addEventListener('resize', () => {
@@ -158,6 +167,101 @@ document.addEventListener('toggle', event => {
   qsa('.faq-list details').forEach(other => { if (other !== item) other.open = false; });
 }, true);
 
+function safeMediaUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const url = new URL(raw, window.location.href);
+    if (!['http:', 'https:'].includes(url.protocol)) return '';
+    return url.href;
+  } catch (_) {
+    return '';
+  }
+}
+
+function youtubeEmbedUrl(raw) {
+  try {
+    const url = new URL(raw);
+    let id = '';
+    if (url.hostname === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
+    if (url.hostname.endsWith('youtube.com')) {
+      if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
+      const parts = url.pathname.split('/').filter(Boolean);
+      if (['shorts', 'embed'].includes(parts[0])) id = parts[1] || id;
+    }
+    if (!/^[A-Za-z0-9_-]{6,20}$/.test(id)) return '';
+    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0&modestbranding=1';
+  } catch (_) {
+    return '';
+  }
+}
+
+function vimeoEmbedUrl(raw) {
+  try {
+    const url = new URL(raw);
+    if (!url.hostname.endsWith('vimeo.com')) return '';
+    const id = url.pathname.split('/').filter(Boolean).find(part => /^\d+$/.test(part)) || '';
+    if (!id) return '';
+    return 'https://player.vimeo.com/video/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&dnt=1';
+  } catch (_) {
+    return '';
+  }
+}
+
+function stopPortfolioVideo() {
+  if (portfolioVideo) {
+    try { portfolioVideo.pause(); } catch (_) {}
+    portfolioVideo.removeAttribute('src');
+    portfolioVideo.removeAttribute('poster');
+    portfolioVideo.load();
+    portfolioVideo.hidden = true;
+  }
+  if (portfolioVideoEmbed) {
+    portfolioVideoEmbed.src = 'about:blank';
+    portfolioVideoEmbed.hidden = true;
+  }
+  if (videoLoading) videoLoading.hidden = true;
+}
+
+async function openVideo(id, trigger) {
+  const project = PROJECTS[id];
+  if (!project || !videoModal) return;
+  const raw = safeMediaUrl(project.video);
+  if (!raw) return;
+
+  lastStoryTrigger = trigger || lastStoryTrigger;
+  stopPortfolioVideo();
+  if (videoLoading) videoLoading.hidden = false;
+
+  const youtube = youtubeEmbedUrl(raw);
+  const vimeo = vimeoEmbedUrl(raw);
+
+  if (youtube || vimeo) {
+    if (!portfolioVideoEmbed) return;
+    portfolioVideoEmbed.hidden = false;
+    portfolioVideoEmbed.src = youtube || vimeo;
+    portfolioVideoEmbed.onload = () => { if (videoLoading) videoLoading.hidden = true; };
+  } else if (portfolioVideo) {
+    portfolioVideo.hidden = false;
+    portfolioVideo.poster = project.image || '';
+    portfolioVideo.src = raw;
+    portfolioVideo.oncanplay = () => { if (videoLoading) videoLoading.hidden = true; };
+    portfolioVideo.onerror = () => {
+      if (videoLoading) {
+        videoLoading.hidden = false;
+        videoLoading.textContent = 'Não foi possível reproduzir este vídeo.';
+      }
+    };
+  }
+
+  if (typeof videoModal.showModal === 'function') videoModal.showModal();
+  else videoModal.setAttribute('open', '');
+
+  if (!youtube && !vimeo && portfolioVideo) {
+    try { await portfolioVideo.play(); } catch (_) {}
+  }
+}
+
 function fillStory(id) {
   const project = PROJECTS[id];
   if (!project || !storyModal) return;
@@ -180,8 +284,16 @@ function openStory(card) {
 }
 
 document.addEventListener('click', event => {
+  const play = event.target.closest('[data-video-project]');
+  if (play) {
+    event.preventDefault();
+    event.stopPropagation();
+    openVideo(play.dataset.videoProject, play);
+    return;
+  }
+
   const card = event.target.closest('.work-card[data-project]');
-  if (card && !event.target.closest('#story-modal')) openStory(card);
+  if (card && !event.target.closest('#story-modal') && !event.target.closest('#video-modal')) openStory(card);
 });
 
 document.addEventListener('keydown', event => {
@@ -199,6 +311,17 @@ storyModal?.addEventListener('click', event => {
   const rect=storyModal.getBoundingClientRect();
   const inside=event.clientX>=rect.left && event.clientX<=rect.right && event.clientY>=rect.top && event.clientY<=rect.bottom;
   if (!inside) storyModal.close();
+});
+
+qs('.video-close',videoModal)?.addEventListener('click', () => videoModal.close());
+videoModal?.addEventListener('close', () => {
+  stopPortfolioVideo();
+  lastStoryTrigger?.focus?.();
+});
+videoModal?.addEventListener('click', event => {
+  const rect=videoModal.getBoundingClientRect();
+  const inside=event.clientX>=rect.left && event.clientX<=rect.right && event.clientY>=rect.top && event.clientY<=rect.bottom;
+  if (!inside) videoModal.close();
 });
 
 function formatBrazilianPhone(value) {
