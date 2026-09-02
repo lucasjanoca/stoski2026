@@ -22,8 +22,7 @@ jobs:
           required=(
             README.md SECURITY.md index.html admin.html .gitignore .nojekyll _headers
             assets/stoski-logo.svg assets/logo-mark.svg assets/favicon.svg
-            assets/media/hero-casamento.webp assets/media/casamento.webp
-            assets/media/evento.webp assets/media/retrato.webp assets/media/henrique.webp
+            assets/media/hero-casamento.webp assets/media/evento.webp assets/media/henrique.webp
             css/styles.css css/extra.css css/polish.css css/admin.css
             js/main.js js/cms.js js/admin.js
             robots.txt sitemap.xml site.webmanifest
@@ -55,7 +54,7 @@ jobs:
         shell: bash
         run: |
           for file in js/*.js; do node --check "$file"; done
-          if grep -InE 'advanced-json|renderAdvancedJson|applyAdvancedJson|data-panel-id="advanced"|data-panel="advanced"' admin.html js/admin.js; then
+          if grep -InE 'advanced-json|renderAdvancedJson|applyAdvancedJson|data-panel-id="advanced"|data-panel="advanced"|advanced-editor|advanced-actions|code-editor' admin.html js/admin.js css/admin.css; then
             echo "Legacy advanced mode code is still present."
             exit 1
           fi
@@ -80,6 +79,8 @@ jobs:
                   if tag=="img": self.imgs.append(a)
                   if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
                   if tag=="button": self.buttons.append(a)
+                  inline_handlers=[k for k in a if k.lower().startswith("on")]
+                  assert not inline_handlers, f"{tag}: inline event handlers are not allowed: {inline_handlers}"
 
           for filename in ("index.html", "admin.html"):
               html = Path(filename).read_text(encoding="utf-8")
@@ -116,6 +117,7 @@ jobs:
                   assert 'autocomplete="current-password"' in html, "admin.html password field must use current-password autocomplete."
                   assert 'YouTube recomendado' in html and 'Não listado' in html, "admin.html: YouTube unlisted workflow missing."
                   assert 'data-preview-path="showreel.video"' in html, "admin.html: video preview action missing."
+                  assert 'id="password-dialog"' in html and 'autocomplete="new-password"' in html, "admin.html: secure password recovery dialog missing."
 
               print(f"{filename}: HTML audit OK.")
           PY
@@ -174,8 +176,8 @@ jobs:
       - name: Verify final cache version
         shell: bash
         run: |
-          grep -q 'js/cms.js?v=20260902-final1' index.html
-          grep -q 'js/main.js?v=20260902-final1' index.html
-          grep -q 'css/polish.css?v=20260902-final1' index.html
-          grep -q 'js/admin.js?v=20260902-final1' admin.html
-          grep -q 'css/admin.css?v=20260902-final1' admin.html
+          grep -q 'js/cms.js?v=20260902-final2' index.html
+          grep -q 'js/main.js?v=20260902-final2' index.html
+          grep -q 'css/polish.css?v=20260902-final2' index.html
+          grep -q 'js/admin.js?v=20260902-final2' admin.html
+          grep -q 'css/admin.css?v=20260902-final2' admin.html
