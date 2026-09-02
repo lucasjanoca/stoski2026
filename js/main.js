@@ -190,16 +190,28 @@ function safeMediaUrl(value) {
   }
 }
 
+function isYouTubeHost(host) {
+  return host === 'youtu.be' || host === 'youtube.com' || host.endsWith('.youtube.com');
+}
+
+function isVimeoHost(host) {
+  return host === 'vimeo.com' || host.endsWith('.vimeo.com');
+}
+
 function youtubeEmbedUrl(raw) {
   try {
     const url = new URL(raw);
+    const host = url.hostname.toLowerCase();
+    if (!isYouTubeHost(host)) return '';
+
     let id = '';
-    if (url.hostname === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
-    if (url.hostname.endsWith('youtube.com')) {
+    if (host === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
+    else {
       if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
       const parts = url.pathname.split('/').filter(Boolean);
-      if (['shorts', 'embed'].includes(parts[0])) id = parts[1] || id;
+      if (['shorts', 'embed', 'live'].includes(parts[0])) id = parts[1] || id;
     }
+
     if (!/^[A-Za-z0-9_-]{6,20}$/.test(id)) return '';
     return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0&modestbranding=1';
   } catch (_) {
@@ -210,7 +222,8 @@ function youtubeEmbedUrl(raw) {
 function vimeoEmbedUrl(raw) {
   try {
     const url = new URL(raw);
-    if (!url.hostname.endsWith('vimeo.com')) return '';
+    const host = url.hostname.toLowerCase();
+    if (!isVimeoHost(host)) return '';
     const id = url.pathname.split('/').filter(Boolean).find(part => /^\d+$/.test(part)) || '';
     if (!id) return '';
     return 'https://player.vimeo.com/video/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&dnt=1';
@@ -246,13 +259,23 @@ async function openVideo(id, trigger) {
 
   const youtube = youtubeEmbedUrl(raw);
   const vimeo = vimeoEmbedUrl(raw);
+  let knownProvider = false;
+  try {
+    const host = new URL(raw).hostname.toLowerCase();
+    knownProvider = isYouTubeHost(host) || isVimeoHost(host);
+  } catch (_) {}
 
-  if (youtube || vimeo) {
+  if (knownProvider && !youtube && !vimeo) {
+    if (videoLoading) {
+      videoLoading.hidden = false;
+      videoLoading.textContent = 'Link de vídeo inválido. Confira o link no painel administrativo.';
+    }
+  } else if (youtube || vimeo) {
     if (!portfolioVideoEmbed) return;
     portfolioVideoEmbed.hidden = false;
     portfolioVideoEmbed.src = youtube || vimeo;
     portfolioVideoEmbed.onload = () => { if (videoLoading) videoLoading.hidden = true; };
-  } else if (portfolioVideo) {
+  } else if (!knownProvider && portfolioVideo) {
     portfolioVideo.hidden = false;
     portfolioVideo.poster = project.image || '';
     portfolioVideo.src = raw;
@@ -268,7 +291,7 @@ async function openVideo(id, trigger) {
   if (typeof videoModal.showModal === 'function') videoModal.showModal();
   else videoModal.setAttribute('open', '');
 
-  if (!youtube && !vimeo && portfolioVideo) {
+  if (!knownProvider && !youtube && !vimeo && portfolioVideo) {
     try { await portfolioVideo.play(); } catch (_) {}
   }
 }
