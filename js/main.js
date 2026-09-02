@@ -1,14 +1,15 @@
 'use strict';
 
-const WHATSAPP_NUMBER = '5515997411289';
-const INSTAGRAM_URL = 'https://www.instagram.com/stoski_films/';
+let WHATSAPP_NUMBER = '5515997411289';
+let INSTAGRAM_URL = 'https://www.instagram.com/stoski_films/';
+let WHATSAPP_GREETING = 'Olá, Henrique! Vim pelo site da *Stoski Films* e gostaria de solicitar um orçamento. 🎬';
 
-const PROJECTS = {
+let PROJECTS = {
   '1': {
     title: 'Histórias a dois',
     category: 'Filme de casamento',
     subtitle: 'Casamentos · Love stories',
-    image: 'assets/media/hero-casamento.avif',
+    image: 'assets/media/hero-casamento.webp',
     story: 'Um filme pensado para guardar a atmosfera, os detalhes e a emoção de uma celebração a dois. A narrativa transforma cada instante em uma história para reviver.'
   },
   '2': {
@@ -29,6 +30,29 @@ const PROJECTS = {
 
 const qs = (selector, scope = document) => scope.querySelector(selector);
 const qsa = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+
+function applyRuntimeConfig(cfg) {
+  if (!cfg || typeof cfg !== 'object') return;
+  if (cfg.social?.whatsappNumber) WHATSAPP_NUMBER = String(cfg.social.whatsappNumber).replace(/\D/g, '');
+  if (cfg.social?.instagramUrl) INSTAGRAM_URL = String(cfg.social.instagramUrl);
+  if (cfg.budget?.whatsappGreeting) WHATSAPP_GREETING = String(cfg.budget.whatsappGreeting);
+  if (Array.isArray(cfg.portfolio?.items)) {
+    PROJECTS = Object.fromEntries(cfg.portfolio.items.map((item, index) => {
+      const id = String(item.id || index + 1);
+      return [id, {
+        title: item.title || '',
+        category: item.category || '',
+        subtitle: item.subtitle || '',
+        image: item.image || 'assets/logo-mark.svg',
+        story: item.story || ''
+      }];
+    }));
+  }
+  qsa('a[href*="instagram.com"]').forEach(link => { link.href = INSTAGRAM_URL; });
+}
+
+document.addEventListener('stoski:config', event => applyRuntimeConfig(event.detail));
+if (window.STOSKI_CONFIG) applyRuntimeConfig(window.STOSKI_CONFIG);
 
 const header = qs('.site-header');
 const menuToggle = qs('.menu-toggle');
@@ -128,6 +152,12 @@ qsa('.faq-list details').forEach(item => {
   });
 });
 
+document.addEventListener('toggle', event => {
+  const item = event.target;
+  if (!(item instanceof HTMLDetailsElement) || !item.matches('.faq-list details') || !item.open) return;
+  qsa('.faq-list details').forEach(other => { if (other !== item) other.open = false; });
+}, true);
+
 function fillStory(id) {
   const project = PROJECTS[id];
   if (!project || !storyModal) return;
@@ -149,13 +179,17 @@ function openStory(card) {
   qs('.story-close',storyModal)?.focus();
 }
 
-qsa('.work-card[data-project]').forEach(card => {
-  card.addEventListener('click', () => openStory(card));
-  card.addEventListener('keydown', event => {
-    if (!['Enter',' '].includes(event.key)) return;
-    event.preventDefault();
-    openStory(card);
-  });
+document.addEventListener('click', event => {
+  const card = event.target.closest('.work-card[data-project]');
+  if (card && !event.target.closest('#story-modal')) openStory(card);
+});
+
+document.addEventListener('keydown', event => {
+  if (!['Enter',' '].includes(event.key)) return;
+  const card = event.target.closest?.('.work-card[data-project]');
+  if (!card) return;
+  event.preventDefault();
+  openStory(card);
 });
 
 qs('.story-close',storyModal)?.addEventListener('click', () => storyModal.close());
@@ -205,7 +239,7 @@ function formatDateBR(raw) {
 
 function buildWhatsAppMessage(data) {
   const lines=[
-    'Olá, Henrique! Vim pelo site da *Stoski Films* e gostaria de solicitar um orçamento. 🎬',
+    WHATSAPP_GREETING,
     '',
     `*Nome:* ${data.get('name')}`,
     `*Meu WhatsApp:* ${data.get('whatsapp')}`,
