@@ -491,8 +491,8 @@ p{text-wrap:pretty}
 .video-modal[open]{display:block}
 .video-close{
   position:absolute;
-  top:-18px;
-  right:-18px;
+  top:14px;
+  right:14px;
   z-index:4;
   width:48px;
   height:48px;
@@ -554,8 +554,8 @@ p{text-wrap:pretty}
   }
   .video-stage{border-radius:0;aspect-ratio:16/9}
   .video-close{
-    top:-56px;
-    right:14px;
+    top:12px;
+    right:12px;
     width:44px;
     height:44px;
     background:rgba(16,16,16,.96);
