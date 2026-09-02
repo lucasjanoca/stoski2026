@@ -73,7 +73,6 @@
           <button class="nav-item" data-panel="contact" type="button">Contato & orçamento</button>
           <button class="nav-item" data-panel="appearance" type="button">Aparência</button>
           <button class="nav-item" data-panel="sections" type="button">Seções</button>
-          <button class="nav-item" data-panel="advanced" type="button">Modo avançado</button>
           <button class="nav-item owner-only" data-panel="admins" type="button">Administradores</button>
           <button class="nav-item" data-panel="history" type="button">Histórico</button>
         </nav>
@@ -315,23 +314,6 @@
               <label><input data-path="visibility.faq" type="checkbox"><span>FAQ</span></label>
               <label><input data-path="visibility.socialShowcase" type="checkbox"><span>Instagram</span></label>
               <label><input data-path="visibility.budget" type="checkbox"><span>Orçamento</span></label>
-            </div>
-          </section>
-
-          <section class="panel" data-panel-id="advanced">
-            <div class="panel-head">
-              <div><p class="eyebrow">Controle total</p><h1>Modo avançado</h1><p>Edite a configuração completa do CMS em JSON. Esse modo permite alterar qualquer propriedade disponível no site sem liberar execução de HTML ou JavaScript.</p></div>
-            </div>
-            <div class="section-block advanced-editor">
-              <div class="section-block-head">
-                <div><h3>Configuração completa</h3><p>Use apenas JSON válido. Antes de publicar, o painel valida o conteúdo.</p></div>
-                <div class="advanced-actions">
-                  <button class="btn small" id="advanced-refresh-btn" type="button">Recarregar JSON</button>
-                  <button class="btn small primary" id="advanced-apply-btn" type="button">Aplicar ao rascunho</button>
-                </div>
-              </div>
-              <textarea id="advanced-json" class="code-editor" rows="28" spellcheck="false" autocomplete="off"></textarea>
-              <div id="advanced-status" class="status" role="status" aria-live="polite"></div>
             </div>
           </section>
 
