@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/favicon.svg?v=20260830-logo" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/admin.css?v=20260902-video3">
+  <link rel="stylesheet" href="css/admin.css?v=20260902-vimeo1">
 </head>
 <body>
   <div class="admin-shell">
@@ -218,6 +218,15 @@
               </div>
             </div>
 
+            <div class="vimeo-helper">
+              <div>
+                <span class="vimeo-badge">Vimeo recomendado</span>
+                <h3>1. Envie no Vimeo · 2. Copie o link · 3. Cole aqui</h3>
+                <p>O site detecta o Vimeo automaticamente e reproduz dentro do player da Stoski Films. Para vídeos grandes, essa é a opção mais estável.</p>
+              </div>
+              <a class="btn primary" href="https://vimeo.com/upload" target="_blank" rel="noopener">Abrir Vimeo ↗</a>
+            </div>
+
             <div class="form-grid two">
               <label><span>Chamada</span><input data-path="showreel.kicker" type="text"></label>
               <label><span>Botão</span><input data-path="showreel.buttonLabel" type="text"></label>
@@ -243,13 +252,16 @@
               <div class="section-block-head">
                 <div>
                   <h3>Vídeo principal</h3>
-                  <p>Cole um link do YouTube/Vimeo ou envie MP4/WebM de até 50 MB.</p>
+                  <p>Cole o link do Vimeo. YouTube e arquivo direto continuam funcionando como alternativa.</p>
                 </div>
               </div>
               <div class="upload-field compact video-upload-field">
-                <div><span>Vídeo</span><small>Para 1080p/4K e vídeos maiores, YouTube/Vimeo costuma ser mais leve e estável.</small></div>
-                <input data-path="showreel.video" type="text" placeholder="https://youtube.com/... ou https://vimeo.com/...">
-                <label class="btn file-btn small">Enviar vídeo<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-target="showreel.video"></label>
+                <div><span>Link do vídeo</span><small>Recomendado: https://vimeo.com/123456789</small></div>
+                <input data-path="showreel.video" type="url" placeholder="https://vimeo.com/123456789">
+                <div class="media-actions">
+                  <button class="btn small" type="button" data-preview-path="showreel.video">Testar vídeo</button>
+                  <label class="btn file-btn small">MP4/WebM curto<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-target="showreel.video"></label>
+                </div>
               </div>
             </div>
           </section>
@@ -406,7 +418,21 @@
     </form>
   </dialog>
 
+  <dialog id="media-preview-dialog" class="modal media-preview-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div><p class="eyebrow">Prévia</p><h2>Testar vídeo</h2></div>
+        <button class="icon-btn" type="button" id="media-preview-close" aria-label="Fechar">×</button>
+      </div>
+      <div class="admin-video-stage">
+        <video id="admin-video-preview" controls playsinline preload="metadata" hidden></video>
+        <iframe id="admin-video-embed" title="Prévia do vídeo" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen hidden></iframe>
+        <p id="admin-video-error" class="empty" hidden></p>
+      </div>
+    </div>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/admin.js?v=20260902-video3" defer></script>
+  <script src="js/admin.js?v=20260902-vimeo1" defer></script>
 </body>
 </html>
