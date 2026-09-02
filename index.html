@@ -28,9 +28,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/media/hero-casamento.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/extra.css">
-  <link rel="stylesheet" href="css/polish.css">
+  <link rel="stylesheet" href="css/styles.css?v=20260902-video3">
+  <link rel="stylesheet" href="css/extra.css?v=20260902-video3">
+  <link rel="stylesheet" href="css/polish.css?v=20260902-video3">
 
   <script type="application/ld+json">
   {
@@ -111,6 +111,20 @@
           <p>Narrativa, ritmo, som, luz e detalhe. Cada filme nasce para preservar a atmosfera do momento e fazer a história ser sentida outra vez.</p>
         </div>
       </div>
+    </section>
+
+    <section class="showreel section-pad" id="showreel" aria-labelledby="showreel-title">
+      <div class="showreel-copy reveal">
+        <p class="section-kicker" id="showreel-kicker">Showreel</p>
+        <h2 id="showreel-title">Veja a história em movimento.</h2>
+        <p id="showreel-text">Um recorte do estilo, ritmo e olhar da Stoski Films.</p>
+      </div>
+      <button class="showreel-card reveal" id="showreel-play" type="button" data-video-project="showreel" aria-label="Assistir showreel" hidden>
+        <img id="showreel-cover" src="assets/media/hero-casamento.webp" alt="Showreel Stoski Films" loading="lazy" decoding="async">
+        <span class="showreel-overlay" aria-hidden="true"></span>
+        <span class="showreel-play-icon" aria-hidden="true">▶</span>
+        <span class="showreel-play-label" id="showreel-button-label">Assistir showreel</span>
+      </button>
     </section>
 
     <section class="work section-pad" id="trabalhos" aria-labelledby="work-title">
@@ -295,7 +309,7 @@
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/cms.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script src="js/cms.js?v=20260902-video3" defer></script>
+  <script src="js/main.js?v=20260902-video3" defer></script>
 </body>
 </html>
