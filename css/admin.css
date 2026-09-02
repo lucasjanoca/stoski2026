@@ -562,3 +562,23 @@ input:disabled,select:disabled,button:disabled{opacity:.48;cursor:not-allowed}
   .advanced-actions{display:grid;grid-template-columns:1fr}
   .code-editor{min-height:440px;font-size:11px;padding:14px}
 }
+
+
+/* Portfolio video controls */
+.video-upload-field{margin-top:12px}
+.video-linked{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid rgba(199,166,107,.22);
+  border-radius:12px;
+  background:rgba(199,166,107,.06);
+}
+.video-linked span{font-size:12px;font-weight:600;color:var(--accent-2)}
+.video-linked small{font-size:11px;color:var(--muted);text-align:right}
+@media(max-width:560px){
+  .video-linked{align-items:flex-start;flex-direction:column}
+  .video-linked small{text-align:left}
+}
