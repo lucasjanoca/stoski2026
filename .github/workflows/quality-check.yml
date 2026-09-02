@@ -16,37 +16,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build premium hero asset
-        shell: bash
-        run: |
-          mkdir -p assets/media
-          cat build-assets/hero-avif/part-*.b64 | tr -d '\\n\\r ' | base64 -d > assets/media/hero-casamento.avif
-          echo "5ace78471f7c3cbff38ac07f49293ba7e77a5f88531aedac3df20f7938a6f1fc  assets/media/hero-casamento.avif" | sha256sum -c -
-
       - name: Verify production files
         shell: bash
         run: |
           required=(
-            README.md index.html .gitignore SECURITY.md
+            README.md index.html admin.html .gitignore SECURITY.md
             assets/stoski-logo.svg assets/logo-mark.svg assets/favicon.svg
-            assets/media/hero-casamento.avif
-            css/styles.css css/extra.css css/polish.css
-            js/main.js robots.txt sitemap.xml site.webmanifest
+            assets/media/hero-casamento.webp
+            css/styles.css css/extra.css css/polish.css css/admin.css
+            js/main.js js/cms.js js/admin.js
+            robots.txt sitemap.xml site.webmanifest
           )
           for file in "${required[@]}"; do
             test -f "$file" || { echo "Required file missing: $file"; exit 1; }
           done
 
-      - name: Reject private files and insecure static admin
+      - name: Reject private files and secret keys
         shell: bash
         run: |
-          blocked="$(git ls-files | grep -E '(^|/)\\.env($|\\.)|\\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\\.local\\.js$' || true)"
+          blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
           test -z "$blocked" || { echo "Private/local files found:"; echo "$blocked"; exit 1; }
-          test ! -f admin.html || { echo "Public static admin.html is not allowed."; exit 1; }
-          test ! -f js/admin.js || { echo "Public admin credentials logic is not allowed."; exit 1; }
+
+          if grep -RInE --exclude-dir=.git --exclude='quality-check.yml'             'sb_secret_|service_role|SUPABASE_SERVICE_ROLE|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|ADMIN_PASSWORD[[:space:]]*=' .; then
+            echo "Potential server secret or hardcoded admin password found."
+            exit 1
+          fi
+
+          if grep -RInE --exclude-dir=.git '(galinha007|senha123|admin123|password123)' .; then
+            echo "Known weak/demo password found in repository."
+            exit 1
+          fi
 
       - name: Check JavaScript syntax
-        run: node --check js/main.js
+        shell: bash
+        run: |
+          node --check js/main.js
+          node --check js/cms.js
+          node --check js/admin.js
 
       - name: Audit HTML structure and local references
         shell: bash
@@ -57,48 +63,64 @@ jobs:
           from urllib.parse import urlparse
           import re
 
-          html = Path("index.html").read_text(encoding="utf-8")
+          for filename in ("index.html", "admin.html"):
+              html = Path(filename).read_text(encoding="utf-8")
 
-          class P(HTMLParser):
-              def __init__(self):
-                  super().__init__(); self.refs=[]; self.ids=[]; self.imgs=[]; self.blank=[]
-              def handle_starttag(self, tag, attrs):
-                  a=dict(attrs)
-                  if a.get("id"): self.ids.append(a["id"])
-                  for key in ("src","href"):
-                      if a.get(key): self.refs.append((tag,key,a[key]))
-                  if tag=="img": self.imgs.append(a)
-                  if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
+              class P(HTMLParser):
+                  def __init__(self):
+                      super().__init__(); self.refs=[]; self.ids=[]; self.imgs=[]; self.blank=[]
+                  def handle_starttag(self, tag, attrs):
+                      a=dict(attrs)
+                      if a.get("id"): self.ids.append(a["id"])
+                      for key in ("src","href"):
+                          if a.get(key): self.refs.append((tag,key,a[key]))
+                      if tag=="img": self.imgs.append(a)
+                      if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
 
-          p=P(); p.feed(html)
-          dup={x for x in p.ids if p.ids.count(x)>1}
-          assert not dup, f"Duplicate IDs: {sorted(dup)}"
+              p=P(); p.feed(html)
+              dup={x for x in p.ids if p.ids.count(x)>1}
+              assert not dup, f"{filename}: duplicate IDs: {sorted(dup)}"
 
-          idset=set(p.ids)
-          broken=[v for _,k,v in p.refs if k=="href" and v.startswith("#") and v[1:] not in idset]
-          assert not broken, f"Broken anchors: {broken}"
+              idset=set(p.ids)
+              broken=[v for _,k,v in p.refs if k=="href" and v.startswith("#") and v[1:] not in idset]
+              assert not broken, f"{filename}: broken anchors: {broken}"
 
-          missing=[]
-          for tag,key,value in p.refs:
-              if value.startswith(("#","http://","https://","mailto:","tel:","data:")): continue
-              path=urlparse(value).path
-              if path and not Path(path).exists(): missing.append(f"{tag}[{key}] -> {value}")
-          assert not missing, "Broken local references:\\n" + "\\n".join(missing)
+              missing=[]
+              for tag,key,value in p.refs:
+                  if value.startswith(("#","http://","https://","mailto:","tel:","data:")): continue
+                  path=urlparse(value).path
+                  if path and not Path(path).exists(): missing.append(f"{tag}[{key}] -> {value}")
+              assert not missing, f"{filename}: broken local references:\n" + "\n".join(missing)
 
-          assert all("alt" in img for img in p.imgs), "Every image must have alt text."
-          assert all("noopener" in a.get("rel","").split() for a in p.blank), "target=_blank must use noopener."
-          assert re.search(r'<main\\b', html, re.I), "Missing main landmark."
-          assert 'lang="pt-BR"' in html, "Document language must be pt-BR."
-          assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
-          print("HTML audit OK.")
+              assert all("alt" in img for img in p.imgs), f"{filename}: every image must have alt text."
+              assert all("noopener" in a.get("rel","").split() for a in p.blank), f"{filename}: target=_blank must use noopener."
+              assert 'lang="pt-BR"' in html, f"{filename}: document language must be pt-BR."
+
+              if filename == "index.html":
+                  assert re.search(r'<main\b', html, re.I), "index.html: missing main landmark."
+                  assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
+              else:
+                  assert 'name="robots" content="noindex,nofollow,noarchive"' in html, "admin.html must be noindex."
+                  assert 'autocomplete="current-password"' in html, "admin.html password field must use current-password autocomplete."
+
+              print(f"{filename}: HTML audit OK.")
           PY
 
-      - name: Check premium hero quality
+      - name: Check hero media
         shell: bash
         run: |
-          bytes="$(wc -c < assets/media/hero-casamento.avif)"
-          test "$bytes" -ge 30000 || { echo "Hero media is too compressed: $bytes bytes"; exit 1; }
-          test "$bytes" -le 120000 || { echo "Hero media is unexpectedly heavy: $bytes bytes"; exit 1; }
-          signature="$(dd if=assets/media/hero-casamento.avif bs=1 skip=4 count=8 2>/dev/null)"
-          test "$signature" = "ftypavif" || { echo "Hero is not a valid AVIF container."; exit 1; }
-          echo "Premium hero verified: $bytes bytes"
+          bytes="$(wc -c < assets/media/hero-casamento.webp)"
+          test "$bytes" -ge 5000 || { echo "Hero media is too small: $bytes bytes"; exit 1; }
+          test "$bytes" -le 500000 || { echo "Hero media is unexpectedly heavy: $bytes bytes"; exit 1; }
+          signature="$(dd if=assets/media/hero-casamento.webp bs=1 count=12 2>/dev/null | xxd -p -c 12)"
+          echo "$signature" | grep -qi '^52494646........57454250$' || { echo "Hero is not a valid WEBP RIFF container."; exit 1; }
+          echo "Hero verified: $bytes bytes"
+
+      - name: Check CMS security posture
+        shell: bash
+        run: |
+          grep -q 'sb_publishable_' js/admin.js || { echo "Admin must use a publishable Supabase key."; exit 1; }
+          grep -q 'persistSession: true' js/admin.js || { echo "Admin auth session persistence missing."; exit 1; }
+          grep -q 'stoski_admins' js/admin.js || { echo "Admin authorization check missing."; exit 1; }
+          grep -q 'stoski_site_config' js/cms.js || { echo "Public CMS config loader missing."; exit 1; }
+          echo "CMS checks OK."
