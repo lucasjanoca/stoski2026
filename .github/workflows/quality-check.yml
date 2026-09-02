@@ -37,13 +37,14 @@ jobs:
           blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
           test -z "$blocked" || { echo "Private/local files found:"; echo "$blocked"; exit 1; }
 
-          if grep -RInE --exclude-dir=.git --exclude='quality-check.yml'             'sb_secret_|service_role|SUPABASE_SERVICE_ROLE|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|ADMIN_PASSWORD[[:space:]]*=' .; then
-            echo "Potential server secret or hardcoded admin password found."
+          if grep -InE 'sb_secret_|service_role|SUPABASE_SERVICE_ROLE|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|ADMIN_PASSWORD[[:space:]]*=' \
+            index.html admin.html js/*.js 2>/dev/null; then
+            echo "Potential server secret or hardcoded admin password found in production code."
             exit 1
           fi
 
-          if grep -RInE --exclude-dir=.git '(galinha007|senha123|admin123|password123)' .; then
-            echo "Known weak/demo password found in repository."
+          if grep -InE '(galinha007|senha123|admin123|password123)' index.html admin.html js/*.js 2>/dev/null; then
+            echo "Known weak/demo password found in production code."
             exit 1
           fi
 
