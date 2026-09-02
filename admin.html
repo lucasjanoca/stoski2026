@@ -421,6 +421,22 @@
     </form>
   </dialog>
 
+  <dialog id="password-dialog" class="modal">
+    <form class="modal-card" id="password-form">
+      <div class="modal-head">
+        <div><p class="eyebrow">Segurança</p><h2>Definir nova senha</h2></div>
+        <button class="icon-btn" type="button" id="password-cancel" aria-label="Fechar">×</button>
+      </div>
+      <label><span>Nova senha</span><input id="new-password" type="password" autocomplete="new-password" minlength="10" required></label>
+      <label><span>Confirmar nova senha</span><input id="confirm-password" type="password" autocomplete="new-password" minlength="10" required></label>
+      <div id="password-status" class="status" role="status" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button class="btn" id="password-cancel-footer" type="button">Cancelar</button>
+        <button class="btn primary" type="submit">Salvar nova senha</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="media-preview-dialog" class="modal media-preview-modal">
     <div class="modal-card">
       <div class="modal-head">
