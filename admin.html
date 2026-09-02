@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/favicon.svg?v=20260830-logo" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/admin.css?v=20260902-vimeo1">
+  <link rel="stylesheet" href="css/admin.css?v=20260902-youtube1">
 </head>
 <body>
   <div class="admin-shell">
@@ -214,17 +214,17 @@
               <div>
                 <p class="eyebrow">Vídeos</p>
                 <h1>Showreel principal</h1>
-                <p>Use um vídeo forte como destaque do site. Para melhor qualidade em vídeos longos, prefira YouTube ou Vimeo; para vídeos curtos, também dá para enviar MP4/WebM diretamente.</p>
+                <p>Use um vídeo forte como destaque do site. Para vídeos longos e pesados, use YouTube como principal. Deixe o vídeo como Não listado e cole o link aqui; MP4/WebM curto continua como alternativa.</p>
               </div>
             </div>
 
-            <div class="vimeo-helper">
+            <div class="youtube-helper">
               <div>
-                <span class="vimeo-badge">Vimeo recomendado</span>
-                <h3>1. Envie no Vimeo · 2. Copie o link · 3. Cole aqui</h3>
-                <p>O site detecta o Vimeo automaticamente e reproduz dentro do player da Stoski Films. Para vídeos grandes, essa é a opção mais estável.</p>
+                <span class="youtube-badge">YouTube recomendado · grátis</span>
+                <h3>1. Envie no YouTube · 2. Marque como Não listado · 3. Copie o link</h3>
+                <p>O vídeo fica hospedado no YouTube, mas toca dentro do site da Stoski Films. Assim dá para usar arquivos grandes e manter o site leve.</p>
               </div>
-              <a class="btn primary" href="https://vimeo.com/upload" target="_blank" rel="noopener">Abrir Vimeo ↗</a>
+              <a class="btn primary" href="https://studio.youtube.com/" target="_blank" rel="noopener">Abrir YouTube Studio ↗</a>
             </div>
 
             <div class="form-grid two">
@@ -252,12 +252,12 @@
               <div class="section-block-head">
                 <div>
                   <h3>Vídeo principal</h3>
-                  <p>Cole o link do Vimeo. YouTube e arquivo direto continuam funcionando como alternativa.</p>
+                  <p>Cole o link do YouTube. Vimeo e arquivo direto continuam funcionando como alternativas.</p>
                 </div>
               </div>
               <div class="upload-field compact video-upload-field">
-                <div><span>Link do vídeo</span><small>Recomendado: https://vimeo.com/123456789</small></div>
-                <input data-path="showreel.video" type="url" placeholder="https://vimeo.com/123456789">
+                <div><span>Link do vídeo</span><small>Recomendado: vídeo do YouTube como Não listado.</small></div>
+                <input data-path="showreel.video" type="url" placeholder="https://youtu.be/SEU_VIDEO">
                 <div class="media-actions">
                   <button class="btn small" type="button" data-preview-path="showreel.video">Testar vídeo</button>
                   <label class="btn file-btn small">MP4/WebM curto<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-target="showreel.video"></label>
@@ -433,6 +433,6 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/admin.js?v=20260902-vimeo1" defer></script>
+  <script src="js/admin.js?v=20260902-youtube1" defer></script>
 </body>
 </html>
