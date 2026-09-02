@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://yncspxfsvlqdnodlsosb.supabase.co; media-src 'self' blob: https:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Stoski Films — filmagem, edição e produção de vídeos em Cerquilho e região. Filmes de casamento, eventos e conteúdo audiovisual por Henrique Stoski.">
   <meta name="robots" content="index,follow,max-image-preview:large">
@@ -25,12 +27,13 @@
   <link rel="canonical" href="https://lucasjanoca.github.io/stoski2026/">
   <link rel="icon" href="assets/favicon.svg?v=20260830-logo" type="image/svg+xml">
   <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://yncspxfsvlqdnodlsosb.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/media/hero-casamento.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=20260902-video3">
-  <link rel="stylesheet" href="css/extra.css?v=20260902-video3">
-  <link rel="stylesheet" href="css/polish.css?v=20260902-video3">
+  <link rel="stylesheet" href="css/styles.css?v=20260902-final1">
+  <link rel="stylesheet" href="css/extra.css?v=20260902-final1">
+  <link rel="stylesheet" href="css/polish.css?v=20260902-final1">
 
   <script type="application/ld+json">
   {
@@ -113,7 +116,7 @@
       </div>
     </section>
 
-    <section class="showreel section-pad" id="showreel" aria-labelledby="showreel-title">
+    <section class="showreel section-pad" id="showreel" hidden aria-labelledby="showreel-title">
       <div class="showreel-copy reveal">
         <p class="section-kicker" id="showreel-kicker">Showreel</p>
         <h2 id="showreel-title">Veja a história em movimento.</h2>
@@ -300,7 +303,7 @@
 
   <footer class="site-footer">
     <div class="footer-brand"><img class="footer-logo" src="assets/stoski-logo.svg?v=20260830-logo" alt="Stoski Films" width="520" height="120"><span>Cerquilho · São Paulo</span></div>
-    <div class="footer-links"><a href="#trabalhos">Portfólio</a><a href="#servicos">Serviços</a><a href="#sobre">Sobre</a><a href="#faq">Dúvidas</a><a href="#orcamento">Contato</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="admin.html?v=20260902-video3" rel="nofollow">Painel ADM</a></div>
+    <div class="footer-links"><a href="#trabalhos">Portfólio</a><a href="#servicos">Serviços</a><a href="#sobre">Sobre</a><a href="#faq">Dúvidas</a><a href="#orcamento">Contato</a><a href="https://api.whatsapp.com/send?phone=5515997411289" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a><a href="https://www.instagram.com/stoski_films/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
     <div class="footer-bottom"><span>© <span id="year"></span> Stoski Films.</span><span class="credit">Site por <a href="https://infotech-io.com.br" target="_blank" rel="noopener noreferrer">InfoTech.io</a></span></div>
   </footer>
 
@@ -309,7 +312,7 @@
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/cms.js?v=20260902-video3" defer></script>
-  <script src="js/main.js?v=20260902-video3" defer></script>
+  <script src="js/cms.js?v=20260902-final1" defer></script>
+  <script src="js/main.js?v=20260902-final1" defer></script>
 </body>
 </html>
