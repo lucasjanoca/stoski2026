@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/favicon.svg?v=20260830-logo" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=20260902-video3">
 </head>
 <body>
   <div class="admin-shell">
@@ -66,6 +66,7 @@
           <button class="nav-item" data-panel="hero" type="button">Início</button>
           <button class="nav-item" data-panel="services" type="button">Serviços</button>
           <button class="nav-item" data-panel="portfolio" type="button">Portfólio</button>
+          <button class="nav-item" data-panel="videos" type="button">Vídeos</button>
           <button class="nav-item" data-panel="about" type="button">Sobre</button>
           <button class="nav-item" data-panel="differentials" type="button">Diferenciais</button>
           <button class="nav-item" data-panel="process" type="button">Processo</button>
@@ -206,6 +207,51 @@
               <label class="full"><span>Texto do link para Instagram</span><input data-path="portfolio.instagramLabel" type="text"></label>
             </div>
             <div class="repeater cards" data-object-list="portfolio.items" data-template="portfolio"></div>
+          </section>
+
+          <section class="panel" data-panel-id="videos">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Vídeos</p>
+                <h1>Showreel principal</h1>
+                <p>Use um vídeo forte como destaque do site. Para melhor qualidade em vídeos longos, prefira YouTube ou Vimeo; para vídeos curtos, também dá para enviar MP4/WebM diretamente.</p>
+              </div>
+            </div>
+
+            <div class="form-grid two">
+              <label><span>Chamada</span><input data-path="showreel.kicker" type="text"></label>
+              <label><span>Botão</span><input data-path="showreel.buttonLabel" type="text"></label>
+              <label class="full"><span>Título</span><input data-path="showreel.title" type="text"></label>
+              <label class="full"><span>Texto</span><textarea data-path="showreel.text" rows="3"></textarea></label>
+            </div>
+
+            <div class="section-block">
+              <div class="section-block-head">
+                <div>
+                  <h3>Capa do showreel</h3>
+                  <p>A capa carrega rápido; o vídeo só é carregado quando a pessoa aperta ▶.</p>
+                </div>
+              </div>
+              <div class="upload-field compact">
+                <div><span>Imagem de capa</span><small>JPG, PNG, WebP ou AVIF.</small></div>
+                <input data-path="showreel.cover" type="text" placeholder="https://...">
+                <label class="btn file-btn small">Enviar capa<input type="file" accept="image/*" data-upload-target="showreel.cover"></label>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <div class="section-block-head">
+                <div>
+                  <h3>Vídeo principal</h3>
+                  <p>Cole um link do YouTube/Vimeo ou envie MP4/WebM de até 50 MB.</p>
+                </div>
+              </div>
+              <div class="upload-field compact video-upload-field">
+                <div><span>Vídeo</span><small>Para 1080p/4K e vídeos maiores, YouTube/Vimeo costuma ser mais leve e estável.</small></div>
+                <input data-path="showreel.video" type="text" placeholder="https://youtube.com/... ou https://vimeo.com/...">
+                <label class="btn file-btn small">Enviar vídeo<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-target="showreel.video"></label>
+              </div>
+            </div>
           </section>
 
           <section class="panel" data-panel-id="about">
@@ -360,6 +406,6 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/admin.js" defer></script>
+  <script src="js/admin.js?v=20260902-video3" defer></script>
 </body>
 </html>
