@@ -111,8 +111,9 @@
 
     client.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
+        const dialog = q('#password-dialog');
+        if (dialog && !dialog.open) dialog.showModal();
         q('#new-password')?.focus();
-        q('#password-dialog')?.showModal();
       }
 
       if (session?.user && (!currentUser || currentUser.id !== session.user.id)) {
@@ -619,6 +620,13 @@
 
   async function saveConfig() {
     if (!dirty || !config) return;
+
+    const invalidVideos = validateVideoConfig();
+    if (invalidVideos.length) {
+      showStatus('Corrija o link de vídeo em: ' + invalidVideos.join(', ') + '.', 'error', 8000);
+      return;
+    }
+
     saveBtn.disabled = true;
     saveBtn.textContent = 'Publicando…';
     showStatus('Salvando e publicando alterações…', 'info', 0);
@@ -766,28 +774,52 @@
     try {
       const url = new URL(value);
       const host = url.hostname.toLowerCase();
+      const youtubeHost = host === 'youtu.be' || host === 'youtube.com' || host.endsWith('.youtube.com');
+      const vimeoHost = host === 'vimeo.com' || host.endsWith('.vimeo.com');
 
-      if (host === 'youtu.be' || host.endsWith('youtube.com')) {
+      if (youtubeHost) {
         let id = '';
         if (host === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
-        if (host.endsWith('youtube.com')) {
+        else {
           if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
           const parts = url.pathname.split('/').filter(Boolean);
-          if (['shorts','embed'].includes(parts[0])) id = parts[1] || id;
+          if (['shorts','embed','live'].includes(parts[0])) id = parts[1] || id;
         }
-        if (id) return { type: 'embed', url: 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0' };
+        if (/^[A-Za-z0-9_-]{6,20}$/.test(id)) {
+          return { type: 'embed', url: 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0' };
+        }
+        return { type: 'invalid', url: '' };
       }
 
-      if (host === 'vimeo.com' || host.endsWith('.vimeo.com')) {
+      if (vimeoHost) {
         const parts = url.pathname.split('/').filter(Boolean);
         const id = parts.find(part => /^\d+$/.test(part));
         if (id) return { type: 'embed', url: 'https://player.vimeo.com/video/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&dnt=1' };
+        return { type: 'invalid', url: '' };
       }
 
       if (['http:','https:'].includes(url.protocol)) return { type: 'file', url: url.href };
     } catch (_) {}
 
     return { type: 'invalid', url: '' };
+  }
+
+  function validateVideoConfig() {
+    const invalid = [];
+
+    const showreel = getPath(config, 'showreel.video');
+    if (showreel && normalizeVideoUrl(showreel).type === 'invalid') invalid.push('Showreel');
+
+    const projects = getPath(config, 'portfolio.items');
+    if (Array.isArray(projects)) {
+      projects.forEach((item, index) => {
+        if (item?.video && normalizeVideoUrl(item.video).type === 'invalid') {
+          invalid.push(item.title || ('Projeto ' + (index + 1)));
+        }
+      });
+    }
+
+    return invalid;
   }
 
   function closeMediaPreview() {
