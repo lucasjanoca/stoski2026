@@ -401,6 +401,11 @@
     if (!config) return;
     const target = event.target;
 
+    if (target.dataset.adminRole && event.type === 'change') {
+      changeAdminRole(target.dataset.adminRole, target.value);
+      return;
+    }
+
     if (target.dataset.path) {
       const value = target.type === 'checkbox' ? target.checked : target.value;
       setPath(config, target.dataset.path, value);
