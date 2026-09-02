@@ -16,13 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify production files
+      - name: Verify production files and cleanup
         shell: bash
         run: |
           required=(
-            README.md index.html admin.html .gitignore SECURITY.md
+            README.md SECURITY.md index.html admin.html .gitignore .nojekyll _headers
             assets/stoski-logo.svg assets/logo-mark.svg assets/favicon.svg
-            assets/media/hero-casamento.webp
+            assets/media/hero-casamento.webp assets/media/casamento.webp
+            assets/media/evento.webp assets/media/retrato.webp assets/media/henrique.webp
             css/styles.css css/extra.css css/polish.css css/admin.css
             js/main.js js/cms.js js/admin.js
             robots.txt sitemap.xml site.webmanifest
@@ -30,15 +31,17 @@ jobs:
           for file in "${required[@]}"; do
             test -f "$file" || { echo "Required file missing: $file"; exit 1; }
           done
+          test ! -d build-assets || { echo "Legacy build-assets directory must not be committed."; exit 1; }
+          test ! -f js/polish.js || { echo "Unused js/polish.js must not be committed."; exit 1; }
 
-      - name: Reject private files and secret keys
+      - name: Reject private files and secrets
         shell: bash
         run: |
           blocked="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|p12|pfx)$|(^|/)id_rsa$|(^|/)config\.local\.js$' || true)"
           test -z "$blocked" || { echo "Private/local files found:"; echo "$blocked"; exit 1; }
 
           if grep -InE 'sb_secret_|service_role|SUPABASE_SERVICE_ROLE|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|ADMIN_PASSWORD[[:space:]]*=' \
-            index.html admin.html js/*.js 2>/dev/null; then
+            index.html admin.html js/*.js css/*.css 2>/dev/null; then
             echo "Potential server secret or hardcoded admin password found in production code."
             exit 1
           fi
@@ -48,14 +51,16 @@ jobs:
             exit 1
           fi
 
-      - name: Check JavaScript syntax
+      - name: Check JavaScript syntax and legacy code
         shell: bash
         run: |
-          node --check js/main.js
-          node --check js/cms.js
-          node --check js/admin.js
+          for file in js/*.js; do node --check "$file"; done
+          if grep -InE 'advanced-json|renderAdvancedJson|applyAdvancedJson|data-panel-id="advanced"|data-panel="advanced"' admin.html js/admin.js; then
+            echo "Legacy advanced mode code is still present."
+            exit 1
+          fi
 
-      - name: Audit HTML structure and local references
+      - name: Audit HTML, accessibility and local references
         shell: bash
         run: |
           python3 - <<'PY'
@@ -64,21 +69,22 @@ jobs:
           from urllib.parse import urlparse
           import re
 
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.refs=[]; self.ids=[]; self.imgs=[]; self.blank=[]; self.buttons=[]
+              def handle_starttag(self, tag, attrs):
+                  a=dict(attrs)
+                  if a.get("id"): self.ids.append(a["id"])
+                  for key in ("src","href"):
+                      if a.get(key): self.refs.append((tag,key,a[key]))
+                  if tag=="img": self.imgs.append(a)
+                  if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
+                  if tag=="button": self.buttons.append(a)
+
           for filename in ("index.html", "admin.html"):
               html = Path(filename).read_text(encoding="utf-8")
-
-              class P(HTMLParser):
-                  def __init__(self):
-                      super().__init__(); self.refs=[]; self.ids=[]; self.imgs=[]; self.blank=[]
-                  def handle_starttag(self, tag, attrs):
-                      a=dict(attrs)
-                      if a.get("id"): self.ids.append(a["id"])
-                      for key in ("src","href"):
-                          if a.get(key): self.refs.append((tag,key,a[key]))
-                      if tag=="img": self.imgs.append(a)
-                      if tag=="a" and a.get("target")=="_blank": self.blank.append(a)
-
               p=P(); p.feed(html)
+
               dup={x for x in p.ids if p.ids.count(x)>1}
               assert not dup, f"{filename}: duplicate IDs: {sorted(dup)}"
 
@@ -96,32 +102,80 @@ jobs:
               assert all("alt" in img for img in p.imgs), f"{filename}: every image must have alt text."
               assert all("noopener" in a.get("rel","").split() for a in p.blank), f"{filename}: target=_blank must use noopener."
               assert 'lang="pt-BR"' in html, f"{filename}: document language must be pt-BR."
+              assert 'http-equiv="Content-Security-Policy"' in html, f"{filename}: CSP meta missing."
+              assert 'name="referrer"' in html, f"{filename}: referrer policy meta missing."
 
               if filename == "index.html":
                   assert re.search(r'<main\b', html, re.I), "index.html: missing main landmark."
+                  assert 'id="video-modal"' in html, "index.html: video modal missing."
+                  assert 'id="showreel"' in html and 'hidden' in html.split('id="showreel"',1)[0].split('<section',1)[-1], "index.html: showreel must start hidden until CMS config loads."
+                  assert 'Painel ADM</a>' not in html, "index.html: public footer must not expose the admin link."
                   assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
               else:
                   assert 'name="robots" content="noindex,nofollow,noarchive"' in html, "admin.html must be noindex."
                   assert 'autocomplete="current-password"' in html, "admin.html password field must use current-password autocomplete."
+                  assert 'YouTube recomendado' in html and 'Não listado' in html, "admin.html: YouTube unlisted workflow missing."
+                  assert 'data-preview-path="showreel.video"' in html, "admin.html: video preview action missing."
 
               print(f"{filename}: HTML audit OK.")
           PY
 
-      - name: Check hero media
+      - name: Validate CSS, manifest, sitemap and robots
         shell: bash
         run: |
-          bytes="$(wc -c < assets/media/hero-casamento.webp)"
-          test "$bytes" -ge 5000 || { echo "Hero media is too small: $bytes bytes"; exit 1; }
-          test "$bytes" -le 500000 || { echo "Hero media is unexpectedly heavy: $bytes bytes"; exit 1; }
-          signature="$(dd if=assets/media/hero-casamento.webp bs=1 count=12 2>/dev/null | xxd -p -c 12)"
-          echo "$signature" | grep -qi '^52494646........57454250$' || { echo "Hero is not a valid WEBP RIFF container."; exit 1; }
-          echo "Hero verified: $bytes bytes"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re, xml.etree.ElementTree as ET
 
-      - name: Check CMS security posture
+          for path in Path("css").glob("*.css"):
+              css=path.read_text(encoding="utf-8")
+              clean=re.sub(r'/\*.*?\*/','',css,flags=re.S)
+              assert clean.count("{")==clean.count("}"), f"{path}: unbalanced CSS braces"
+              print(f"{path}: CSS brace audit OK.")
+
+          manifest=json.loads(Path("site.webmanifest").read_text(encoding="utf-8"))
+          assert manifest.get("name")=="Stoski Films"
+          assert manifest.get("display")=="standalone"
+          for icon in manifest.get("icons",[]):
+              assert Path(icon["src"]).exists(), f"Manifest icon missing: {icon['src']}"
+
+          ET.parse("sitemap.xml")
+          robots=Path("robots.txt").read_text(encoding="utf-8")
+          assert "Sitemap:" in robots
+          assert "https://lucasjanoca.github.io/stoski2026/" in Path("sitemap.xml").read_text(encoding="utf-8")
+          print("Manifest, sitemap and robots OK.")
+          PY
+
+      - name: Check media integrity
+        shell: bash
+        run: |
+          for file in assets/media/*.webp; do
+            bytes="$(wc -c < "$file")"
+            test "$bytes" -ge 1000 || { echo "$file is unexpectedly small: $bytes bytes"; exit 1; }
+            test "$bytes" -le 1000000 || { echo "$file is unexpectedly heavy: $bytes bytes"; exit 1; }
+            signature="$(dd if="$file" bs=1 count=12 2>/dev/null | xxd -p -c 12)"
+            echo "$signature" | grep -qi '^52494646........57454250$' || { echo "$file is not a valid WEBP RIFF container."; exit 1; }
+          done
+
+      - name: Check CMS, video and security posture
         shell: bash
         run: |
           grep -q 'sb_publishable_' js/admin.js || { echo "Admin must use a publishable Supabase key."; exit 1; }
           grep -q 'persistSession: true' js/admin.js || { echo "Admin auth session persistence missing."; exit 1; }
           grep -q 'stoski_admins' js/admin.js || { echo "Admin authorization check missing."; exit 1; }
           grep -q 'stoski_site_config' js/cms.js || { echo "Public CMS config loader missing."; exit 1; }
-          echo "CMS checks OK."
+          grep -q 'youtube-nocookie.com/embed/' js/main.js || { echo "YouTube privacy-enhanced embed missing."; exit 1; }
+          grep -q 'showreel.video' admin.html || { echo "Showreel video field missing."; exit 1; }
+          grep -q 'data-video-project' js/cms.js || { echo "Portfolio play button integration missing."; exit 1; }
+          grep -q 'https://www.youtube-nocookie.com' _headers || { echo "YouTube frame CSP missing in _headers."; exit 1; }
+          grep -q 'https://yncspxfsvlqdnodlsosb.supabase.co' _headers || { echo "Supabase CSP endpoint missing in _headers."; exit 1; }
+          echo "CMS/video/security checks OK."
+
+      - name: Verify final cache version
+        shell: bash
+        run: |
+          grep -q 'js/cms.js?v=20260902-final1' index.html
+          grep -q 'js/main.js?v=20260902-final1' index.html
+          grep -q 'css/polish.css?v=20260902-final1' index.html
+          grep -q 'js/admin.js?v=20260902-final1' admin.html
+          grep -q 'css/admin.css?v=20260902-final1' admin.html
