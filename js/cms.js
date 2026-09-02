@@ -48,12 +48,20 @@
   }
 
   function applyMeta(meta = {}) {
-    if (meta.title) document.title = meta.title;
+    if (meta.title) {
+      document.title = meta.title;
+      const ogTitle = q('meta[property="og:title"]');
+      const twitterTitle = q('meta[name="twitter:title"]');
+      if (ogTitle) ogTitle.content = meta.title;
+      if (twitterTitle) twitterTitle.content = meta.title;
+    }
     if (meta.description) {
       const d = q('meta[name="description"]');
-      if (d) d.content = meta.description;
       const og = q('meta[property="og:description"]');
+      const twitter = q('meta[name="twitter:description"]');
+      if (d) d.content = meta.description;
       if (og) og.content = meta.description;
+      if (twitter) twitter.content = meta.description;
     }
   }
 
