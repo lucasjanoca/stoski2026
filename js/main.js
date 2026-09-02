@@ -235,16 +235,22 @@ function vimeoEmbedUrl(raw) {
 function stopPortfolioVideo() {
   if (portfolioVideo) {
     try { portfolioVideo.pause(); } catch (_) {}
+    portfolioVideo.oncanplay = null;
+    portfolioVideo.onerror = null;
     portfolioVideo.removeAttribute('src');
     portfolioVideo.removeAttribute('poster');
     portfolioVideo.load();
     portfolioVideo.hidden = true;
   }
   if (portfolioVideoEmbed) {
+    portfolioVideoEmbed.onload = null;
     portfolioVideoEmbed.src = 'about:blank';
     portfolioVideoEmbed.hidden = true;
   }
-  if (videoLoading) videoLoading.hidden = true;
+  if (videoLoading) {
+    videoLoading.textContent = 'Carregando vídeo…';
+    videoLoading.hidden = true;
+  }
 }
 
 async function openVideo(id, trigger) {
@@ -255,7 +261,10 @@ async function openVideo(id, trigger) {
 
   lastStoryTrigger = trigger || lastStoryTrigger;
   stopPortfolioVideo();
-  if (videoLoading) videoLoading.hidden = false;
+  if (videoLoading) {
+    videoLoading.textContent = 'Carregando vídeo…';
+    videoLoading.hidden = false;
+  }
 
   const youtube = youtubeEmbedUrl(raw);
   const vimeo = vimeoEmbedUrl(raw);
