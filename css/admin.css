@@ -585,7 +585,7 @@ input:disabled,select:disabled,button:disabled{opacity:.48;cursor:not-allowed}
 
 
 /* Vimeo-first workflow */
-.vimeo-helper{
+.youtube-helper{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -596,9 +596,9 @@ input:disabled,select:disabled,button:disabled{opacity:.48;cursor:not-allowed}
   border-radius:18px;
   background:linear-gradient(135deg,rgba(199,166,107,.09),rgba(255,255,255,.015));
 }
-.vimeo-helper h3{margin:8px 0 6px;font-size:18px}
-.vimeo-helper p{margin:0;color:var(--muted);font-size:13px;line-height:1.65;max-width:720px}
-.vimeo-badge{
+.youtube-helper h3{margin:8px 0 6px;font-size:18px}
+.youtube-helper p{margin:0;color:var(--muted);font-size:13px;line-height:1.65;max-width:720px}
+.youtube-badge{
   display:inline-flex;
   padding:5px 8px;
   border-radius:999px;
@@ -623,7 +623,7 @@ input:disabled,select:disabled,button:disabled{opacity:.48;cursor:not-allowed}
 .admin-video-stage video,
 .admin-video-stage iframe{width:100%;height:100%;border:0;background:#000}
 @media(max-width:700px){
-  .vimeo-helper{align-items:stretch;flex-direction:column}
-  .vimeo-helper .btn{width:100%}
+  .youtube-helper{align-items:stretch;flex-direction:column}
+  .youtube-helper .btn{width:100%}
   .media-actions{display:grid;grid-template-columns:1fr 1fr}
 }
