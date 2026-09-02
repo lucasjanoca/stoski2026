@@ -559,7 +559,7 @@ input:disabled,select:disabled,button:disabled{opacity:.48;cursor:not-allowed}
 }
 
 
-/* Vimeo-first workflow */
+/* YouTube-first workflow */
 .youtube-helper{
   display:flex;
   align-items:center;
