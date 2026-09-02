@@ -76,6 +76,17 @@
     authStatus.className = 'status ' + type;
   }
 
+  function authErrorMessage(error) {
+    const message = String(error?.message || '').toLowerCase();
+    if (message.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+    if (message.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+    if (message.includes('user already registered')) return 'Essa conta já existe. Use “Entrar” ou “Esqueci a senha”.';
+    if (message.includes('password') && message.includes('characters')) return 'A senha não atende aos requisitos de segurança.';
+    if (message.includes('rate limit')) return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+    if (message.includes('email address') && message.includes('invalid')) return 'Informe um e-mail válido.';
+    return error?.message || 'Não foi possível concluir esta ação.';
+  }
+
   function setDirty(value = true) {
     dirty = value;
     if (saveIndicator) {
@@ -100,12 +111,8 @@
 
     client.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        const next = window.prompt('Digite sua nova senha (mínimo 10 caracteres):');
-        if (next && next.length >= 10) {
-          const { error } = await client.auth.updateUser({ password: next });
-          if (error) showStatus(error.message, 'error');
-          else showStatus('Senha atualizada com sucesso.', 'success');
-        }
+        q('#new-password')?.focus();
+        q('#password-dialog')?.showModal();
       }
 
       if (session?.user && (!currentUser || currentUser.id !== session.user.id)) {
@@ -139,6 +146,9 @@
     q('#admin-cancel-btn')?.addEventListener('click', () => q('#admin-dialog')?.close());
     q('#admin-form')?.addEventListener('submit', addAdmin);
     q('#media-preview-close')?.addEventListener('click', closeMediaPreview);
+    q('#password-form')?.addEventListener('submit', updateRecoveredPassword);
+    q('#password-cancel')?.addEventListener('click', () => q('#password-dialog')?.close());
+    q('#password-cancel-footer')?.addEventListener('click', () => q('#password-dialog')?.close());
 
     q('#admin-nav')?.addEventListener('click', event => {
       const button = event.target.closest('[data-panel]');
@@ -172,7 +182,7 @@
     setAuthStatus('Entrando…');
     const { data, error } = await client.auth.signInWithPassword({ email, password });
     if (error) {
-      setAuthStatus('Não foi possível entrar: ' + error.message, 'error');
+      setAuthStatus(authErrorMessage(error), 'error');
       return;
     }
     if (data?.user) await enterWithUser(data.user);
@@ -190,7 +200,7 @@
       email,
       options: { emailRedirectTo: location.origin + location.pathname }
     });
-    setAuthStatus(error ? error.message : 'Link enviado. Confira seu e-mail.', error ? 'error' : 'success');
+    setAuthStatus(error ? authErrorMessage(error) : 'Link enviado. Confira seu e-mail.', error ? 'error' : 'success');
   }
 
   async function signUp() {
@@ -207,7 +217,7 @@
       options: { emailRedirectTo: location.origin + location.pathname }
     });
     if (error) {
-      setAuthStatus(error.message, 'error');
+      setAuthStatus(authErrorMessage(error), 'error');
       return;
     }
     if (data?.session?.user) {
@@ -226,7 +236,38 @@
     const { error } = await client.auth.resetPasswordForEmail(email, {
       redirectTo: location.origin + location.pathname
     });
-    setAuthStatus(error ? error.message : 'Enviamos um link para redefinir sua senha.', error ? 'error' : 'success');
+    setAuthStatus(error ? authErrorMessage(error) : 'Enviamos um link para redefinir sua senha.', error ? 'error' : 'success');
+  }
+
+  async function updateRecoveredPassword(event) {
+    event.preventDefault();
+    const first = q('#new-password')?.value || '';
+    const second = q('#confirm-password')?.value || '';
+    const status = q('#password-status');
+
+    if (first.length < 10) {
+      status.textContent = 'Use uma senha com pelo menos 10 caracteres.';
+      status.className = 'status error';
+      return;
+    }
+    if (first !== second) {
+      status.textContent = 'As duas senhas precisam ser iguais.';
+      status.className = 'status error';
+      return;
+    }
+
+    const { error } = await client.auth.updateUser({ password: first });
+    if (error) {
+      status.textContent = authErrorMessage(error);
+      status.className = 'status error';
+      return;
+    }
+
+    q('#new-password').value = '';
+    q('#confirm-password').value = '';
+    status.textContent = '';
+    q('#password-dialog')?.close();
+    showStatus('Senha atualizada com sucesso.', 'success');
   }
 
   async function logout() {
@@ -253,7 +294,7 @@
       return;
     }
 
-    currentAdmin = (data || []).find(item => String(item.email).toLowerCase() === String(user.email).toLowerCase()) || null;
+    currentAdmin = (data || []).find(item => item.user_id === user.id) || null;
     if (!currentAdmin) {
       showOnly('unauthorized');
       return;
