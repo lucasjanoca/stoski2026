@@ -387,8 +387,8 @@
           '</div>' +
           (item.image ? '<img class="image-preview" src="' + esc(item.image) + '" alt="Prévia do projeto">' : '') +
           '<div class="upload-field compact video-upload-field">' +
-            '<div><span>Vídeo do projeto</span><small><b>Vimeo recomendado.</b> Cole o link do vídeo; MP4/WebM curto continua como alternativa.</small></div>' +
-            '<input type="url" value="' + esc(item.video || '') + '" placeholder="https://vimeo.com/123456789" data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="video">' +
+            '<div><span>Vídeo do projeto</span><small><b>YouTube não listado recomendado.</b> Cole o link; MP4/WebM curto continua como alternativa.</small></div>' +
+            '<input type="url" value="' + esc(item.video || '') + '" placeholder="https://youtu.be/SEU_VIDEO" data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="video">' +
             '<div class="media-actions">' +
               '<button class="btn small" type="button" data-preview-object="' + esc(path) + '" data-index="' + index + '" data-key="video">Testar vídeo</button>' +
               '<label class="btn file-btn small">MP4/WebM<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-object="' + esc(path) + '" data-index="' + index + '" data-key="video"></label>' +
