@@ -140,6 +140,7 @@
     q('#add-admin-btn')?.addEventListener('click', openAdminDialog);
     q('#admin-cancel-btn')?.addEventListener('click', () => q('#admin-dialog')?.close());
     q('#admin-form')?.addEventListener('submit', addAdmin);
+    q('#media-preview-close')?.addEventListener('click', closeMediaPreview);
 
     q('#admin-nav')?.addEventListener('click', event => {
       const button = event.target.closest('[data-panel]');
@@ -386,9 +387,12 @@
           '</div>' +
           (item.image ? '<img class="image-preview" src="' + esc(item.image) + '" alt="Prévia do projeto">' : '') +
           '<div class="upload-field compact video-upload-field">' +
-            '<div><span>Vídeo</span><small>Cole um link do YouTube/Vimeo ou envie MP4/WebM de até 50 MB.</small></div>' +
-            '<input type="text" value="' + esc(item.video || '') + '" placeholder="https://..." data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="video">' +
-            '<label class="btn file-btn small">Enviar vídeo<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-object="' + esc(path) + '" data-index="' + index + '" data-key="video"></label>' +
+            '<div><span>Vídeo do projeto</span><small><b>Vimeo recomendado.</b> Cole o link do vídeo; MP4/WebM curto continua como alternativa.</small></div>' +
+            '<input type="url" value="' + esc(item.video || '') + '" placeholder="https://vimeo.com/123456789" data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="video">' +
+            '<div class="media-actions">' +
+              '<button class="btn small" type="button" data-preview-object="' + esc(path) + '" data-index="' + index + '" data-key="video">Testar vídeo</button>' +
+              '<label class="btn file-btn small">MP4/WebM<input type="file" accept="video/mp4,video/webm,.mp4,.webm" data-upload-object="' + esc(path) + '" data-index="' + index + '" data-key="video"></label>' +
+            '</div>' +
           '</div>' +
           (item.video ? '<div class="video-linked"><span>Vídeo configurado</span><small>O botão ▶ aparecerá nesse projeto no site.</small></div>' : '') +
         '</article>';
@@ -494,6 +498,21 @@
       const path = moveItem.dataset.listPath;
       moveArrayItem(path, Number(moveItem.dataset.index), moveItem.dataset.moveItem);
       renderObjectList(q('[data-object-list="' + cssEscape(path) + '"]'));
+      return;
+    }
+
+    const previewPath = event.target.closest('[data-preview-path]');
+    if (previewPath) {
+      const value = getPath(config, previewPath.dataset.previewPath);
+      openMediaPreview(value);
+      return;
+    }
+
+    const previewObject = event.target.closest('[data-preview-object]');
+    if (previewObject) {
+      const list = getPath(config, previewObject.dataset.previewObject);
+      const item = Array.isArray(list) ? list[Number(previewObject.dataset.index)] : null;
+      openMediaPreview(item?.[previewObject.dataset.key]);
       return;
     }
 
@@ -701,6 +720,84 @@
       target.value = '';
     }
   });
+
+  function normalizeVideoUrl(raw) {
+    const value = String(raw || '').trim();
+    if (!value) return { type: 'none', url: '' };
+
+    try {
+      const url = new URL(value);
+      const host = url.hostname.toLowerCase();
+
+      if (host === 'youtu.be' || host.endsWith('youtube.com')) {
+        let id = '';
+        if (host === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
+        if (host.endsWith('youtube.com')) {
+          if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
+          const parts = url.pathname.split('/').filter(Boolean);
+          if (['shorts','embed'].includes(parts[0])) id = parts[1] || id;
+        }
+        if (id) return { type: 'embed', url: 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0' };
+      }
+
+      if (host === 'vimeo.com' || host.endsWith('.vimeo.com')) {
+        const parts = url.pathname.split('/').filter(Boolean);
+        const id = parts.find(part => /^\d+$/.test(part));
+        if (id) return { type: 'embed', url: 'https://player.vimeo.com/video/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&dnt=1' };
+      }
+
+      if (['http:','https:'].includes(url.protocol)) return { type: 'file', url: url.href };
+    } catch (_) {}
+
+    return { type: 'invalid', url: '' };
+  }
+
+  function closeMediaPreview() {
+    const dialog = q('#media-preview-dialog');
+    const video = q('#admin-video-preview');
+    const frame = q('#admin-video-embed');
+    if (video) {
+      try { video.pause(); } catch (_) {}
+      video.removeAttribute('src');
+      video.load();
+      video.hidden = true;
+    }
+    if (frame) {
+      frame.src = 'about:blank';
+      frame.hidden = true;
+    }
+    if (dialog?.open) dialog.close();
+  }
+
+  function openMediaPreview(raw) {
+    const dialog = q('#media-preview-dialog');
+    const video = q('#admin-video-preview');
+    const frame = q('#admin-video-embed');
+    const error = q('#admin-video-error');
+    const parsed = normalizeVideoUrl(raw);
+
+    if (!dialog || !video || !frame || !error) return;
+
+    video.hidden = true;
+    frame.hidden = true;
+    error.hidden = true;
+    error.textContent = '';
+
+    if (parsed.type === 'embed') {
+      frame.src = parsed.url;
+      frame.hidden = false;
+    } else if (parsed.type === 'file') {
+      video.src = parsed.url;
+      video.hidden = false;
+    } else {
+      error.textContent = parsed.type === 'none'
+        ? 'Cole ou envie um vídeo primeiro.'
+        : 'Link de vídeo inválido. Use Vimeo, YouTube ou um link direto de MP4/WebM.';
+      error.hidden = false;
+    }
+
+    dialog.showModal();
+  }
 
   async function loadHistory() {
     if (!currentAdmin) return;
