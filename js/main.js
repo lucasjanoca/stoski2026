@@ -298,6 +298,7 @@ document.addEventListener('click', event => {
 
 document.addEventListener('keydown', event => {
   if (!['Enter',' '].includes(event.key)) return;
+  if (event.target.closest?.('[data-video-project]')) return;
   const card = event.target.closest?.('.work-card[data-project]');
   if (!card) return;
   event.preventDefault();
