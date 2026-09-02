@@ -52,6 +52,17 @@ function applyRuntimeConfig(cfg) {
       }];
     }));
   }
+
+  if (cfg.showreel) {
+    PROJECTS.showreel = {
+      title: cfg.showreel.title || 'Showreel Stoski Films',
+      category: cfg.showreel.kicker || 'Showreel',
+      subtitle: '',
+      image: cfg.showreel.cover || 'assets/media/hero-casamento.webp',
+      video: cfg.showreel.video || '',
+      story: cfg.showreel.text || ''
+    };
+  }
   qsa('a[href*="instagram.com"]').forEach(link => { link.href = INSTAGRAM_URL; });
 }
 
