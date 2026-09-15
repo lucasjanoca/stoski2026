@@ -213,7 +213,15 @@ function youtubeEmbedUrl(raw) {
     }
 
     if (!/^[A-Za-z0-9_-]{6,20}$/.test(id)) return '';
-    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&playsinline=1&rel=0&modestbranding=1';
+    const params = new URLSearchParams({
+      autoplay: '1',
+      playsinline: '1',
+      controls: '0',
+      rel: '0',
+      iv_load_policy: '3',
+      fs: '0'
+    });
+    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?' + params.toString();
   } catch (_) {
     return '';
   }
@@ -253,6 +261,19 @@ function stopPortfolioVideo() {
   }
 }
 
+async function tryEnterVideoFullscreen() {
+  if (!videoModal || document.fullscreenElement) return;
+  try {
+    if (typeof videoModal.requestFullscreen === 'function') {
+      await videoModal.requestFullscreen({ navigationUI: 'hide' });
+    } else if (typeof videoModal.webkitRequestFullscreen === 'function') {
+      videoModal.webkitRequestFullscreen();
+    }
+  } catch (_) {
+    // Fullscreen is best-effort; the large cinema modal remains as fallback.
+  }
+}
+
 async function openVideo(id, trigger) {
   const project = PROJECTS[id];
   if (!project || !videoModal) return;
@@ -262,7 +283,7 @@ async function openVideo(id, trigger) {
   lastStoryTrigger = trigger || lastStoryTrigger;
   stopPortfolioVideo();
   if (videoLoading) {
-    videoLoading.textContent = 'Carregando vídeo…';
+    videoLoading.textContent = 'Carregando vídeo em alta qualidade…';
     videoLoading.hidden = false;
   }
 
@@ -299,6 +320,8 @@ async function openVideo(id, trigger) {
 
   if (typeof videoModal.showModal === 'function') videoModal.showModal();
   else videoModal.setAttribute('open', '');
+
+  await tryEnterVideoFullscreen();
 
   if (!knownProvider && !youtube && !vimeo && portfolioVideo) {
     try { await portfolioVideo.play(); } catch (_) {}
@@ -357,7 +380,12 @@ storyModal?.addEventListener('click', event => {
   if (!inside) storyModal.close();
 });
 
-qs('.video-close',videoModal)?.addEventListener('click', () => videoModal.close());
+qs('.video-close',videoModal)?.addEventListener('click', async () => {
+  try {
+    if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+  } catch (_) {}
+  videoModal?.close();
+});
 videoModal?.addEventListener('close', () => {
   stopPortfolioVideo();
   lastStoryTrigger?.focus?.();
