@@ -237,3 +237,39 @@ html{scroll-padding-top:84px}
 .social-showcase .btn{flex:0 0 auto}
 @media(max-width:900px){.social-showcase-inner{align-items:start;flex-direction:column}.social-showcase .btn{width:100%}}
 @media(max-width:560px){.brand-logo{width:166px}.site-header{padding-inline:18px}}
+
+/* Video quality optimization: maximize the real iframe viewport so YouTube's
+   adaptive streaming has the strongest possible signal to choose HD/4K. */
+.video-modal{
+  width:min(98vw,174dvh,3840px)!important;
+  max-width:none!important;
+  max-height:98dvh!important;
+  margin:auto!important;
+}
+.video-stage{
+  width:100%!important;
+  aspect-ratio:16/9!important;
+  max-height:98dvh!important;
+  background:#000!important;
+}
+#portfolio-video-embed,
+#portfolio-video{
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  background:#000!important;
+}
+@media(max-width:700px){
+  .video-modal{
+    width:100vw!important;
+    max-width:none!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+  }
+  .video-stage{
+    width:100vw!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+  }
+}
