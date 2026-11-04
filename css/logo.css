@@ -1,0 +1,10 @@
+/* Stoski Films — marca vetorial responsiva: curvas SVG sem pixelizacao. */
+.brand-full{flex-shrink:0;min-width:0}
+.brand-logo{display:block;width:clamp(180px,19vw,250px);max-width:100%;height:auto;object-fit:contain;image-rendering:auto}
+.footer-logo{display:block;width:min(270px,75vw);max-width:100%;height:auto;object-fit:contain;image-rendering:auto}
+@media(max-width:900px){
+ .brand-full{flex:1 1 auto;max-width:calc(100% - 64px)}
+ .brand-logo{width:clamp(155px,42vw,215px);max-width:100%}
+}
+@media(max-width:600px){.brand-logo{width:clamp(145px,46vw,185px);max-width:100%}}
+@media(max-width:360px){.brand-logo{width:min(46vw,160px)}}
