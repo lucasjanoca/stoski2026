@@ -917,7 +917,7 @@
     qa('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.panel === name));
     qa('.panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panelId === name));
     const active = q('.nav-item[data-panel="' + cssEscape(name) + '"]');
-    q('#panel-title').textContent = active?.textContent.trim() || 'Painel';
+    q('#panel-title').textContent = active?.lastChild?.textContent.trim() || active?.textContent.trim() || 'Painel';
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
