@@ -116,9 +116,34 @@
     text('#showreel-button-label', showreel.buttonLabel);
 
     const cover = q('#showreel-cover');
-    if (cover && showreel.cover) {
-      cover.src = safeUrl(showreel.cover, cover.src);
-      cover.alt = (showreel.title || 'Showreel Stoski Films');
+    if (cover) {
+      let alternatives = ['assets/media/hero-casamento.webp'];
+      try {
+        const v = new URL(String(showreel.video || ''));
+        const host = v.hostname.toLowerCase();
+        const parts = v.pathname.split('/').filter(Boolean);
+        let id = '';
+        if (host === 'youtu.be') id = parts[0] || '';
+        if (host === 'youtube.com' || host.endsWith('.youtube.com')) {
+          id = v.searchParams.get('v') || (['embed', 'shorts', 'live'].includes(parts[0]) ? parts[1] : '') || '';
+        }
+        if (/^[\w-]{11}$/.test(id)) {
+          alternatives = [
+            'https://i.ytimg.com/vi/' + id + '/sddefault.jpg',
+            'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg',
+            'assets/media/hero-casamento.webp'
+          ];
+        }
+      } catch (_) {
+        // Use the local cover when the configured video does not belong to YouTube.
+      }
+      let index = 0;
+      cover.onerror = () => {
+        const next = alternatives[index++];
+        if (next) cover.src = next;
+      };
+      if (showreel.cover) cover.src = safeUrl(showreel.cover, 'assets/media/hero-casamento.webp');
+      cover.alt = (showreel.title || 'Filme em destaque da Stoski Films');
     }
 
     const button = q('#showreel-play');
