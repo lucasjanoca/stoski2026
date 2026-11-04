@@ -34,7 +34,7 @@
   <link rel="preload" as="image" href="assets/media/hero-casamento.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=20261103-mobile">
   <link rel="stylesheet" href="css/extra.css?v=20261103-mobile">
-  <link rel="stylesheet" href="css/polish.css?v=20261103-mobile">
+  <link rel="stylesheet" href="css/polish.css?v=20261104-carrossel">
   <link rel="stylesheet" href="css/logo.css?v=20261104-svg-sf">
 
   <script type="application/ld+json">
@@ -114,12 +114,27 @@
         <h2 id="showreel-title">Histórias merecem ser sentidas.</h2>
         <p id="showreel-text">Assista a uma produção em destaque e descubra o olhar cinematográfico da Stoski Films.</p>
       </div>
-      <button class="showreel-card reveal" id="showreel-play" type="button" data-video-project="showreel" aria-label="Assistir ao filme em destaque" hidden>
-        <img id="showreel-cover" src="https://i.ytimg.com/vi/VBDmaNWz1jU/maxresdefault.jpg" alt="Capa do filme em destaque Stoski Films" width="1280" height="720" loading="lazy" decoding="async">
-        <span class="showreel-overlay" aria-hidden="true"></span>
-        <span class="showreel-play-icon" aria-hidden="true">▶</span>
-        <span class="showreel-play-label" id="showreel-button-label">Assistir ao filme</span>
-      </button>
+      <div class="showreel-gallery" aria-label="Galeria de filmes em destaque">
+        <div class="showreel-viewport" id="showreel-viewport" role="region" aria-roledescription="carrossel" aria-label="Vídeos em destaque. Deslize para o lado para trocar de vídeo." tabindex="0">
+          <button class="showreel-card showreel-slide reveal" id="showreel-play" type="button" data-video-project="showreel" aria-label="Assistir ao filme em destaque da Stoski Films" hidden>
+            <img id="showreel-cover" src="https://i.ytimg.com/vi/VBDmaNWz1jU/maxresdefault.jpg" alt="Capa do filme em destaque Stoski Films" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="showreel-overlay" aria-hidden="true"></span>
+            <span class="showreel-play-icon" aria-hidden="true">▶</span>
+            <span class="showreel-play-label" id="showreel-button-label">Assistir ao filme</span>
+          </button>
+          <button class="showreel-card showreel-slide showreel-demo" type="button" data-video-project="showreel-demo" aria-label="Assistir ao vídeo demonstrativo Spring, de Blender Studio. Este vídeo não é uma produção da Stoski Films.">
+            <img src="https://i.ytimg.com/vi/WhWc3b3KhnY/maxresdefault.jpg" alt="Cena de Spring, curta-metragem de Blender Studio, usado apenas como demonstração" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="showreel-overlay" aria-hidden="true"></span>
+            <span class="showreel-play-icon" aria-hidden="true">▶</span>
+            <span class="showreel-play-label">Assistir à demonstração</span>
+            <span class="showreel-demo-credit">© Blender Foundation</span>
+          </button>
+        </div>
+        <div class="showreel-dots" role="group" aria-label="Selecionar o vídeo do carrossel">
+          <button class="showreel-dot is-active" type="button" data-showreel-index="0" aria-label="Mostrar vídeo 1 de 2" aria-current="true"></button>
+          <button class="showreel-dot" type="button" data-showreel-index="1" aria-label="Mostrar vídeo 2 de 2" aria-current="false"></button>
+        </div>
+      </div>
     </section>
 
     <section class="manifesto section-pad" aria-label="Manifesto Stoski Films">
@@ -315,6 +330,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="js/cms.js?v=20261103-mobile" defer></script>
-  <script src="js/main.js?v=20261103-mobile" defer></script>
+  <script src="js/main.js?v=20261104-carrossel" defer></script>
 </body>
 </html>
