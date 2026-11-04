@@ -22,14 +22,17 @@ Site oficial de Henrique Stoski (Stoski Films), desenvolvido pela InfoTech.io.
 
 O painel fica em `/admin.html` e não é exibido no rodapé público.
 
+O painel foi simplificado para o cliente: a Visão Geral exibe apenas o resumo de trabalhos, serviços e dúvidas, com atalhos para Portfólio, Vídeo em destaque, Serviços e Contato.
+
 Ele permite:
-- editar todo o conteúdo comercial;
-- gerenciar portfólio e showreel;
-- enviar imagens e vídeos curtos;
-- testar links de vídeo antes de publicar;
-- alterar aparência e visibilidade de seções;
-- restaurar versões anteriores;
+- adicionar, editar e reorganizar serviços e projetos com fotos e vídeos;
+- atualizar o vídeo em destaque e testar seus links antes de salvar;
+- editar apresentação, diferenciais, processo, perguntas e contatos;
+- enviar imagens e vídeos curtos diretamente nas telas relevantes;
+- mostrar ou esconder seções do site;
 - gerenciar administradores quando o usuário é proprietário.
+
+As telas técnicas **Identidade & SEO**, **Início**, **Aparência** e **Histórico** não são oferecidas ao cliente. Exportar, importar e restaurar configuração também não aparecem na Visão Geral. As revisões anteriores continuam preservadas no banco para manutenção técnica, sem expor a restauração no painel.
 
 O frontend usa somente a chave publicável do Supabase. Autorizações importantes são aplicadas por RLS no banco.
 
