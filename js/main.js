@@ -34,6 +34,16 @@ let PROJECTS = {
 const qs = (selector, scope = document) => scope.querySelector(selector);
 const qsa = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
+/* Temporary, clearly attributed YouTube example. Keep it separate from the client's CMS. */
+const SHOWREEL_DEMO = Object.freeze({
+  title: 'Spring — vídeo demonstrativo de Blender Studio',
+  category: 'Demonstração',
+  subtitle: '© Blender Foundation · Não é uma produção da Stoski Films',
+  image: 'https://i.ytimg.com/vi/WhWc3b3KhnY/maxresdefault.jpg',
+  video: 'https://www.youtube.com/watch?v=WhWc3b3KhnY',
+  story: 'Vídeo usado apenas para demonstrar a navegação do carrossel.'
+});
+
 function applyRuntimeConfig(cfg) {
   if (!cfg || typeof cfg !== 'object') return;
   if (cfg.social?.whatsappNumber) WHATSAPP_NUMBER = String(cfg.social.whatsappNumber).replace(/\D/g, '');
@@ -88,6 +98,56 @@ let lastStoryTrigger = null;
 
 const year = qs('#year');
 if (year) year.textContent = new Date().getFullYear();
+
+/* Swipeable featured films: only one 16:9 card is visible at any time. */
+const showreelViewport = qs('#showreel-viewport');
+const showreelDots = qsa('.showreel-dot');
+let showreelIndex = 0;
+
+function setActiveShowreelDot(index) {
+  showreelIndex = Math.max(0, Math.min(showreelDots.length - 1, index));
+  showreelDots.forEach((dot, i) => {
+    const active = i === showreelIndex;
+    dot.classList.toggle('is-active', active);
+    dot.setAttribute('aria-current', String(active));
+  });
+}
+
+function goToShowreel(index, smooth = true) {
+  if (!showreelViewport || !showreelDots.length) return;
+  const target = Math.max(0, Math.min(showreelDots.length - 1, index));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  showreelViewport.scrollTo({
+    left: target * showreelViewport.clientWidth,
+    behavior: smooth && !reduceMotion ? 'smooth' : 'auto'
+  });
+  setActiveShowreelDot(target);
+}
+
+showreelDots.forEach(dot => {
+  dot.addEventListener('click', () => goToShowreel(Number(dot.dataset.showreelIndex)));
+});
+
+if (showreelViewport) {
+  let pendingScrollFrame = false;
+  showreelViewport.addEventListener('scroll', () => {
+    if (pendingScrollFrame) return;
+    pendingScrollFrame = true;
+    requestAnimationFrame(() => {
+      pendingScrollFrame = false;
+      const width = showreelViewport.clientWidth || 1;
+      setActiveShowreelDot(Math.round(showreelViewport.scrollLeft / width));
+    });
+  }, { passive: true });
+
+  showreelViewport.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    goToShowreel(showreelIndex + (event.key === 'ArrowRight' ? 1 : -1));
+  });
+
+  window.addEventListener('resize', () => goToShowreel(showreelIndex, false), { passive: true });
+}
 
 if (dateInput) {
   const today = new Date();
@@ -263,7 +323,7 @@ function stopPortfolioVideo() {
 }
 
 async function openVideo(id, trigger) {
-  const project = PROJECTS[id];
+  const project = PROJECTS[id] || (id === 'showreel-demo' ? SHOWREEL_DEMO : null);
   if (!project || !videoModal) return;
   const raw = safeMediaUrl(project.video);
   if (!raw) return;
