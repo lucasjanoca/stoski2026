@@ -955,3 +955,17 @@ html,body{max-width:100%;overflow-x:clip}
 @media(prefers-reduced-motion:reduce){
   .overview-shortcut{transition:none}
 }
+
+/* Narrow phones: keep the counters easy to read. */
+@media(max-width:420px){
+  .overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .overview-stats article:first-child{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    min-height:83px;
+  }
+  .overview-stats article:first-child strong{margin-top:0}
+  .overview-stats span{overflow-wrap:anywhere}
+}
