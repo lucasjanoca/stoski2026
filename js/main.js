@@ -219,7 +219,8 @@ function youtubeEmbedUrl(raw) {
       controls: '1',
       rel: '0',
       iv_load_policy: '3',
-      fs: '1'
+      fs: '1',
+      color: 'white'
     });
     return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?' + params.toString();
   } catch (_) {
