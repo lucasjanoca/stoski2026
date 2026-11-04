@@ -113,6 +113,11 @@ jobs:
                   assert 'Painel ADM</a>' not in html, "index.html: public footer must not expose the admin link."
                   assert not re.search(r'fotografia|fotógrafo|fotografo|ensaio fotográfico', html, re.I), "Video-only positioning violated."
               else:
+                  for removed in ('data-panel="identity"', 'data-panel="hero"', 'data-panel="appearance"', 'data-panel="history"', 'id="export-btn"', 'id="import-input"', 'id="reset-content-btn"'):
+                      assert removed not in html, f"Admin simplified UI: unexpected control {removed}."
+                  for target in ("portfolio", "videos", "services", "contact"):
+                      assert f'data-open-panel="{target}"' in html, f"Missing overview shortcut: {target}."
+                  assert 'class="overview-stats"' in html, "Admin overview cards missing."
                   assert 'name="robots" content="noindex,nofollow,noarchive"' in html, "admin.html must be noindex."
                   assert 'autocomplete="current-password"' in html, "admin.html password field must use current-password autocomplete."
                   assert 'YouTube recomendado' in html and 'Não listado' in html, "admin.html: YouTube unlisted workflow missing."
@@ -179,5 +184,5 @@ jobs:
           grep -q 'js/cms.js?v=20261103-mobile' index.html
           grep -q 'js/main.js?v=20261103-mobile' index.html
           grep -q 'css/polish.css?v=20261103-mobile' index.html
-          grep -q 'js/admin.js?v=20260902-final2' admin.html
-          grep -q 'css/admin.css?v=20260902-final2' admin.html
+          grep -q 'js/admin.js?v=20261103-painel-cliente' admin.html
+          grep -q 'css/admin.css?v=20261103-painel-cliente' admin.html
