@@ -117,7 +117,7 @@ jobs:
                       assert removed not in html, f"Admin simplified UI: unexpected control {removed}."
                   for target in ("portfolio", "videos", "services", "contact"):
                       assert f'data-open-panel="{target}"' in html, f"Missing overview shortcut: {target}."
-                  assert 'class="overview-stats"' in html, "Admin overview cards missing."
+                  assert 'class="stats-grid overview-stats"' in html, "Admin overview cards missing."
                   assert 'name="robots" content="noindex,nofollow,noarchive"' in html, "admin.html must be noindex."
                   assert 'autocomplete="current-password"' in html, "admin.html password field must use current-password autocomplete."
                   assert 'YouTube recomendado' in html and 'Não listado' in html, "admin.html: YouTube unlisted workflow missing."
