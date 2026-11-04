@@ -948,3 +948,108 @@ img,video,iframe{max-width:100%}
 @media(prefers-reduced-motion:reduce){
   .showreel-card img,.showreel-play-icon{transition:none}
 }
+
+
+/* Stoski Films — featured-video carousel (Nov/2026)
+   One complete video per frame, no peeking partial previews. */
+.showreel-gallery{
+  min-width:0;
+  width:100%;
+  max-width:100%;
+}
+.showreel-viewport{
+  width:100%;
+  min-width:0;
+  display:flex;
+  align-items:stretch;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  scroll-padding:0;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+}
+.showreel-viewport::-webkit-scrollbar{display:none}
+.showreel-viewport:focus-visible{
+  outline:2px solid var(--accent-light);
+  outline-offset:4px;
+}
+.showreel-viewport>.showreel-slide{
+  flex:0 0 100%;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  height:auto;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+}
+.showreel-demo::after{
+  content:"VÍDEO DE EXEMPLO  /  BLENDER STUDIO";
+}
+.showreel-demo-credit{
+  position:absolute;
+  z-index:2;
+  bottom:24px;
+  right:20px;
+  max-width:42%;
+  color:#f4ede0;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.06em;
+  text-align:right;
+  text-shadow:0 1px 10px #000;
+}
+.showreel-dots{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  padding-top:13px;
+}
+.showreel-dot{
+  display:grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.showreel-dot::before{
+  content:"";
+  display:block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#77736c;
+  border:1px solid rgba(255,255,255,.16);
+  transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.showreel-dot.is-active::before,
+.showreel-dot[aria-current="true"]::before{
+  background:#e0b96c;
+  border-color:#f3d69f;
+  transform:scale(1.18);
+  box-shadow:0 0 11px rgba(226,177,88,.35);
+}
+.showreel-dot:hover::before{background:#c7a66b}
+.showreel-dot:focus-visible{
+  outline:2px solid var(--accent-light);
+  outline-offset:1px;
+}
+@media(max-width:600px){
+  .showreel-gallery{width:100%}
+  .showreel-viewport>.showreel-slide{aspect-ratio:16/9;min-height:0}
+  .showreel-demo-credit{right:13px;bottom:12px;font-size:8px}
+  .showreel-demo::after{font-size:7px;letter-spacing:.1em}
+  .showreel-dots{padding-top:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .showreel-viewport{scroll-behavior:auto}
+  .showreel-dot::before{transition:none}
+}
