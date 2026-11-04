@@ -116,9 +116,34 @@
     text('#showreel-button-label', showreel.buttonLabel);
 
     const cover = q('#showreel-cover');
-    if (cover && showreel.cover) {
-      cover.src = safeUrl(showreel.cover, cover.src);
-      cover.alt = (showreel.title || 'Showreel Stoski Films');
+    if (cover) {
+      let alternatives = ['assets/media/hero-casamento.webp'];
+      try {
+        const v = new URL(String(showreel.video || ''));
+        const host = v.hostname.toLowerCase();
+        const parts = v.pathname.split('/').filter(Boolean);
+        let id = '';
+        if (host === 'youtu.be') id = parts[0] || '';
+        if (host === 'youtube.com' || host.endsWith('.youtube.com')) {
+          id = v.searchParams.get('v') || (['embed', 'shorts', 'live'].includes(parts[0]) ? parts[1] : '') || '';
+        }
+        if (/^[\w-]{11}$/.test(id)) {
+          alternatives = [
+            'https://i.ytimg.com/vi/' + id + '/sddefault.jpg',
+            'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg',
+            'assets/media/hero-casamento.webp'
+          ];
+        }
+      } catch (_) {
+        // Use the local cover when the configured video does not belong to YouTube.
+      }
+      let index = 0;
+      cover.onerror = () => {
+        const next = alternatives[index++];
+        if (next) cover.src = next;
+      };
+      if (showreel.cover) cover.src = safeUrl(showreel.cover, 'assets/media/hero-casamento.webp');
+      cover.alt = (showreel.title || 'Filme em destaque da Stoski Films');
     }
 
     const button = q('#showreel-play');
@@ -149,7 +174,7 @@
       const play = video
         ? '<button class="work-play" type="button" data-video-project="' + escapeHtml(id) + '" aria-label="Assistir vídeo: ' + escapeHtml(item.title || 'Projeto Stoski Films') + '"><span aria-hidden="true">▶</span></button>'
         : '';
-      return '<article class="work-card' + large + ' reveal visible" tabindex="0" data-project="' + escapeHtml(id) + '" aria-label="Abrir história: ' + escapeHtml(item.title || '') + '">' +
+      return '<article class="work-card' + large + ' reveal visible" tabindex="0" role="button" data-project="' + escapeHtml(id) + '" aria-label="Abrir história: ' + escapeHtml(item.title || '') + '">' +
         '<div class="media-placeholder ' + mediaClass + '"><img class="work-image" src="' + escapeHtml(image) + '" alt="' + escapeHtml(item.title || 'Projeto Stoski Films') + '" loading="lazy" decoding="async"><span>' + String(index + 1).padStart(2, '0') + '</span></div>' +
         play +
         '<div class="work-meta"><p>' + escapeHtml(item.category || '') + '</p><h3>' + escapeHtml(item.title || '') + '</h3><span>' + escapeHtml(item.subtitle || '') + '</span><b class="work-open">Ver história ↗</b></div>' +
@@ -290,7 +315,8 @@
     };
     Object.entries(map).forEach(([key, selector]) => {
       const el = q(selector);
-      if (!el || visibility[key] === undefined) return;
+      if (!el) return;
+      if (key !== 'showreel' && visibility[key] === undefined) return;
       el.hidden = visibility[key] === false || (key === 'showreel' && !config.showreel?.video);
     });
   }

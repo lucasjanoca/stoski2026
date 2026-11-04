@@ -216,10 +216,11 @@ function youtubeEmbedUrl(raw) {
     const params = new URLSearchParams({
       autoplay: '1',
       playsinline: '1',
-      controls: '0',
+      controls: '1',
       rel: '0',
       iv_load_policy: '3',
-      fs: '0'
+      fs: '1',
+      color: 'white'
     });
     return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?' + params.toString();
   } catch (_) {
@@ -261,19 +262,6 @@ function stopPortfolioVideo() {
   }
 }
 
-async function tryEnterVideoFullscreen() {
-  if (!videoModal || document.fullscreenElement) return;
-  try {
-    if (typeof videoModal.requestFullscreen === 'function') {
-      await videoModal.requestFullscreen({ navigationUI: 'hide' });
-    } else if (typeof videoModal.webkitRequestFullscreen === 'function') {
-      videoModal.webkitRequestFullscreen();
-    }
-  } catch (_) {
-    // Fullscreen is best-effort; the large cinema modal remains as fallback.
-  }
-}
-
 async function openVideo(id, trigger) {
   const project = PROJECTS[id];
   if (!project || !videoModal) return;
@@ -303,6 +291,7 @@ async function openVideo(id, trigger) {
   } else if (youtube || vimeo) {
     if (!portfolioVideoEmbed) return;
     portfolioVideoEmbed.hidden = false;
+    portfolioVideoEmbed.title = 'Assistir: ' + (project.title || 'Vídeo Stoski Films');
     portfolioVideoEmbed.src = youtube || vimeo;
     portfolioVideoEmbed.onload = () => { if (videoLoading) videoLoading.hidden = true; };
   } else if (!knownProvider && portfolioVideo) {
@@ -321,7 +310,7 @@ async function openVideo(id, trigger) {
   if (typeof videoModal.showModal === 'function') videoModal.showModal();
   else videoModal.setAttribute('open', '');
 
-  await tryEnterVideoFullscreen();
+  // Tela cheia permanece sob controle do visitante pelo player de vídeo.
 
   if (!knownProvider && !youtube && !vimeo && portfolioVideo) {
     try { await portfolioVideo.play(); } catch (_) {}

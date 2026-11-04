@@ -176,8 +176,8 @@ jobs:
       - name: Verify final cache version
         shell: bash
         run: |
-          grep -q 'js/cms.js?v=20260902-final2' index.html
-          grep -q 'js/main.js?v=20260902-final2' index.html
-          grep -q 'css/polish.css?v=20260902-final2' index.html
+          grep -q 'js/cms.js?v=20261103-mobile' index.html
+          grep -q 'js/main.js?v=20261103-mobile' index.html
+          grep -q 'css/polish.css?v=20261103-mobile' index.html
           grep -q 'js/admin.js?v=20260902-final2' admin.html
           grep -q 'css/admin.css?v=20260902-final2' admin.html

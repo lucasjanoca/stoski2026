@@ -29,11 +29,12 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://yncspxfsvlqdnodlsosb.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/media/hero-casamento.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=20260902-final2">
-  <link rel="stylesheet" href="css/extra.css?v=20260902-final2">
-  <link rel="stylesheet" href="css/polish.css?v=20260902-final2">
+  <link rel="stylesheet" href="css/styles.css?v=20261103-mobile">
+  <link rel="stylesheet" href="css/extra.css?v=20261103-mobile">
+  <link rel="stylesheet" href="css/polish.css?v=20261103-mobile">
 
   <script type="application/ld+json">
   {
@@ -93,7 +94,7 @@
         <h1 id="hero-title">Transformo momentos em <em>filmes que ficam.</em></h1>
         <p class="hero-text">Filmes de casamento, eventos e produções audiovisuais com narrativa, ritmo e emoção.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#trabalhos">Ver trabalhos</a>
+          <a class="btn btn-primary" href="#showreel">Assistir ao destaque</a>
           <a class="btn btn-ghost" href="#orcamento">Solicitar orçamento</a>
         </div>
         <div class="hero-proof" aria-label="Áreas de atuação">
@@ -106,6 +107,20 @@
       <div class="hero-scroll" aria-hidden="true"><span></span> role para descobrir</div>
     </section>
 
+    <section class="showreel section-pad" id="showreel" hidden aria-labelledby="showreel-title">
+      <div class="showreel-copy reveal">
+        <p class="section-kicker" id="showreel-kicker">Filme em destaque</p>
+        <h2 id="showreel-title">Histórias merecem ser sentidas.</h2>
+        <p id="showreel-text">Assista a uma produção em destaque e descubra o olhar cinematográfico da Stoski Films.</p>
+      </div>
+      <button class="showreel-card reveal" id="showreel-play" type="button" data-video-project="showreel" aria-label="Assistir ao filme em destaque" hidden>
+        <img id="showreel-cover" src="https://i.ytimg.com/vi/VBDmaNWz1jU/maxresdefault.jpg" alt="Capa do filme em destaque Stoski Films" width="1280" height="720" loading="lazy" decoding="async">
+        <span class="showreel-overlay" aria-hidden="true"></span>
+        <span class="showreel-play-icon" aria-hidden="true">▶</span>
+        <span class="showreel-play-label" id="showreel-button-label">Assistir ao filme</span>
+      </button>
+    </section>
+
     <section class="manifesto section-pad" aria-label="Manifesto Stoski Films">
       <div class="manifesto-grid">
         <p class="section-kicker reveal">Não é só gravar.</p>
@@ -114,20 +129,6 @@
           <p>Narrativa, ritmo, som, luz e detalhe. Cada filme nasce para preservar a atmosfera do momento e fazer a história ser sentida outra vez.</p>
         </div>
       </div>
-    </section>
-
-    <section class="showreel section-pad" id="showreel" hidden aria-labelledby="showreel-title">
-      <div class="showreel-copy reveal">
-        <p class="section-kicker" id="showreel-kicker">Showreel</p>
-        <h2 id="showreel-title">Veja a história em movimento.</h2>
-        <p id="showreel-text">Um recorte do estilo, ritmo e olhar da Stoski Films.</p>
-      </div>
-      <button class="showreel-card reveal" id="showreel-play" type="button" data-video-project="showreel" aria-label="Assistir showreel" hidden>
-        <img id="showreel-cover" src="assets/media/hero-casamento.webp" alt="Showreel Stoski Films" loading="lazy" decoding="async">
-        <span class="showreel-overlay" aria-hidden="true"></span>
-        <span class="showreel-play-icon" aria-hidden="true">▶</span>
-        <span class="showreel-play-label" id="showreel-button-label">Assistir showreel</span>
-      </button>
     </section>
 
     <section class="work section-pad" id="trabalhos" aria-labelledby="work-title">
@@ -312,7 +313,7 @@
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/cms.js?v=20260902-final2" defer></script>
-  <script src="js/main.js?v=20260902-final2" defer></script>
+  <script src="js/cms.js?v=20261103-mobile" defer></script>
+  <script src="js/main.js?v=20261103-mobile" defer></script>
 </body>
 </html>

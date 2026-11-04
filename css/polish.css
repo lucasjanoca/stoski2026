@@ -659,3 +659,292 @@ p{text-wrap:pretty}
   .showreel-play-icon{width:62px;height:62px;font-size:17px}
   .showreel-play-label{left:18px;bottom:16px;font-size:9px}
 }
+
+
+/* ===========================================================
+   Stoski Films — mobile-first release refinement (Nov/2026)
+   Overrides legacy layers without changing the brand identity.
+   =========================================================== */
+
+/* Hidden is a functional state: display:grid/flex must never override it. */
+.showreel[hidden], .showreel-card[hidden]{display:none!important}
+html{overflow-x:clip}
+body{max-width:100%;overflow-x:clip}
+main,main>section,.site-header,.work-grid,.about,.budget,.services,
+.showreel,.showreel-copy,.about-copy,.budget-form{min-width:0}
+img,video,iframe{max-width:100%}
+:where(.work-meta,.about-copy,.services-intro,.budget-intro,.showreel-copy) h2,
+:where(.work-meta,.about-copy,.services-intro,.budget-intro,.showreel-copy) h3{overflow-wrap:break-word}
+
+/* Real portrait instead of a small floating avatar. */
+.portrait-placeholder{
+  min-height:0;
+  aspect-ratio:4/5;
+  background:#100f0e;
+}
+.portrait-placeholder .henrique-photo{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  aspect-ratio:auto;
+  max-width:none;
+  object-fit:cover;
+  object-position:center 28%;
+  border:0;
+  box-shadow:none;
+  filter:saturate(.98) contrast(1.015);
+}
+.portrait-placeholder::after{z-index:3;pointer-events:none}
+.portrait-placeholder::before{z-index:3;pointer-events:none}
+
+/* Featured film: custom cinematic cover, no external player chrome before click. */
+.showreel{
+  width:100%;
+  max-width:calc(var(--max) + var(--pad)*2);
+  grid-template-columns:minmax(0,.72fr) minmax(0,1.6fr);
+  gap:clamp(24px,5vw,70px);
+  padding-block:clamp(64px,8vw,120px);
+}
+.showreel-copy{min-width:0}
+.showreel-copy h2{
+  font-size:clamp(34px,4.5vw,66px);
+  line-height:1.07;
+  overflow-wrap:normal;
+}
+.showreel-card{
+  isolation:isolate;
+  min-height:0;
+  border:1px solid rgba(230,200,144,.28);
+  border-radius:16px;
+  box-shadow:0 32px 110px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.025);
+}
+.showreel-card img{display:block;width:100%;height:100%;object-fit:cover}
+.showreel-card:after{
+  content:"STOSKI  /  FILME EM DESTAQUE";
+  position:absolute;
+  top:18px;left:20px;
+  z-index:2;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.18em;
+  color:#f7ead4;
+  text-shadow:0 1px 12px #000;
+}
+.showreel-play-icon{z-index:2;background:rgba(7,7,7,.64)}
+.showreel-play-label{z-index:2;font-weight:600}
+.showreel-card:focus-visible{outline:2px solid var(--gold-soft);outline-offset:5px}
+@media(hover:hover){
+  .showreel-card:hover{border-color:rgba(230,200,144,.6)}
+}
+
+/* Embedded player stays 16:9, centered, large and fully usable. */
+.video-modal{
+  width:min(96vw,1500px)!important;
+  max-width:1500px!important;
+  max-height:calc(100dvh - 28px)!important;
+  margin:auto!important;
+  border-radius:16px!important;
+}
+.video-stage{
+  width:100%!important;
+  max-height:calc(100dvh - 28px)!important;
+  aspect-ratio:16/9!important;
+  min-height:200px;
+}
+.video-close{
+  top:10px;right:10px;
+  width:44px;height:44px;
+  min-width:44px;min-height:44px;
+  background:rgba(0,0,0,.92);
+}
+.video-modal iframe{display:block}
+
+/* Intermediate widths, including 7-11 inch tablets. */
+@media(max-width:1024px){
+  .section-pad{padding-inline:clamp(20px,4vw,46px)}
+  .about,.services,.budget{gap:clamp(28px,4vw,60px)}
+  .service-row{grid-template-columns:32px minmax(0,1fr);gap:12px 18px}
+  .service-row p{grid-column:2}
+  .showreel{grid-template-columns:minmax(0,1fr);gap:26px}
+  .showreel-copy{max-width:720px}
+  .showreel-card{max-width:100%}
+}
+
+/* Mobile layout is composed deliberately rather than squashing the desktop. */
+@media(max-width:900px){
+  :root{--pad:clamp(18px,4vw,28px)}
+  .site-header,
+  .site-header.scrolled{
+    padding-inline:var(--pad);
+    background:rgba(8,8,8,.98);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+  .site-header{gap:16px}
+  .brand-full{flex:1 1 auto;max-width:calc(100% - 64px)}
+  .brand-logo{width:clamp(145px,39vw,205px);max-width:100%;height:auto}
+  .menu-toggle{flex:0 0 46px;z-index:105}
+  .main-nav{
+    width:min(88vw,360px);
+    height:100dvh;
+    justify-content:flex-start;
+    padding:clamp(100px,17vh,142px) 28px calc(34px + env(safe-area-inset-bottom,0px));
+    gap:6px;
+    overscroll-behavior:contain;
+  }
+  body.menu-open{position:fixed;width:100%;overflow:hidden}
+
+  .hero{
+    min-height:min(100svh,840px);
+    height:auto;
+    padding:clamp(116px,17vh,168px) var(--pad) clamp(50px,7vh,78px);
+    align-items:flex-end;
+    background-position:59% center;
+  }
+  .hero::after{
+    background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,.35) 27%,rgba(0,0,0,.72) 68%,rgba(0,0,0,.90));
+  }
+  .hero-content{width:100%;max-width:640px}
+  .hero h1{
+    font-size:clamp(41px,8.5vw,76px);
+    max-width:100%;
+    line-height:.99;
+    letter-spacing:-.045em;
+    margin:14px 0 18px;
+    overflow-wrap:normal;
+  }
+  .hero-text{max-width:560px;font-size:clamp(14px,2.1vw,17px);line-height:1.6}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .hero-actions .btn{width:auto;min-width:170px}
+  .hero-proof{gap:12px;margin-top:20px;font-size:10px}
+  .hero-scroll{display:none}
+  .section-pad{padding-block:clamp(64px,9vw,100px)}
+  .manifesto-grid{grid-template-columns:1fr;gap:18px}
+  .manifesto-copy h2{font-size:clamp(32px,6.5vw,55px)}
+  .work-grid{grid-template-columns:1fr;gap:16px}
+  .work-card{min-height:370px}
+  .work-card-large{min-height:510px;grid-row:auto}
+  .work-meta{left:22px;right:22px;bottom:24px}
+  .work-meta h3{font-size:clamp(28px,5vw,44px);line-height:1.1}
+  .services,.about,.budget{grid-template-columns:minmax(0,1fr);gap:42px}
+  .services-intro{position:static}
+  .about-portrait{max-width:620px;width:100%}
+  .portrait-placeholder{max-height:650px}
+  .about-copy h2{font-size:clamp(37px,7vw,58px)}
+  .process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .process-grid li{min-height:220px}
+  .faq-inner{grid-template-columns:1fr;gap:22px}
+  .budget-form{width:100%;margin:0;max-width:760px}
+  .social-showcase-inner{flex-direction:column;align-items:flex-start}
+  .social-showcase .btn{width:auto}
+}
+
+/* Phones down to narrow 320px widths. */
+@media(max-width:600px){
+  :root{--pad:clamp(16px,5vw,22px)}
+  html{scroll-padding-top:74px}
+  .site-header{height:72px}
+  .site-header.scrolled{height:66px}
+  .brand-logo{width:clamp(140px,47vw,180px)}
+  .hero{
+    min-height:0;
+    padding:clamp(110px,17vh,145px) var(--pad) 54px;
+    background-position:59% center;
+  }
+  .hero h1{
+    font-size:clamp(36px,11vw,55px);
+    line-height:1.015;
+    letter-spacing:-.045em;
+    margin:12px 0 18px;
+  }
+  .hero-text{font-size:15px;max-width:100%;line-height:1.63}
+  .hero-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:24px}
+  .hero-actions .btn{width:100%;min-width:0;min-height:50px}
+  .hero-proof{font-size:9px;line-height:1.5;gap:8px 13px;margin-top:20px}
+  .hero-proof span{gap:7px}
+  .section-pad{padding-block:64px;padding-inline:var(--pad)}
+  .section-head{flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:26px}
+  .manifesto-copy h2{font-size:clamp(30px,8.8vw,43px);line-height:1.08}
+  .manifesto-copy p{font-size:15px}
+  .showreel{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:24px;
+    padding-block:66px;
+  }
+  .showreel-copy h2{font-size:clamp(31px,8.4vw,44px);margin:10px 0 14px}
+  .showreel-copy>p:not(.section-kicker){font-size:14px;line-height:1.6}
+  .showreel-card{aspect-ratio:16/9;min-height:200px;border-radius:10px}
+  .showreel-card:after{top:12px;left:13px;font-size:8px;letter-spacing:.12em}
+  .showreel-play-icon{width:56px;height:56px;font-size:16px}
+  .showreel-play-label{font-size:9px;bottom:12px;left:14px}
+  .work-grid{gap:14px}
+  .work-card{min-height:340px}
+  .work-card-large{min-height:420px}
+  .work-meta{left:18px;right:18px;bottom:20px}
+  .work-meta h3{font-size:clamp(28px,8vw,37px)}
+  .services,.about,.budget{gap:32px}
+  .service-row{grid-template-columns:26px minmax(0,1fr);gap:9px 12px;padding:22px 0}
+  .service-row h3{font-size:21px}
+  .service-row p{font-size:13px}
+  .portrait-placeholder{min-height:0;aspect-ratio:4/5;max-height:none}
+  .about-copy h2{font-size:clamp(35px,9.5vw,50px)}
+  .process-grid{grid-template-columns:1fr;margin-top:30px}
+  .process-grid li,.process-grid li+li,.process-grid li:nth-child(3){
+    min-height:0;
+    padding:22px 0;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+  .process-grid h3{margin-top:30px;font-size:22px}
+  .faq-list summary{min-height:68px;padding:19px 0;font-size:18px}
+  .faq-list details p{margin-right:0;font-size:14px}
+  .budget-form{padding:22px 18px;box-shadow:none}
+  .form-row{grid-template-columns:1fr;gap:18px}
+  .instagram-card{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .instagram-card strong{font-size:12px;overflow-wrap:anywhere}
+  .instagram-card em{display:none}
+  .footer-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+  .whatsapp-float{
+    right:12px;
+    bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    min-width:50px;min-height:50px;
+    padding:12px;
+  }
+  .whatsapp-float strong{display:none}
+  .story-modal{width:calc(100vw - 16px);max-height:92dvh;overflow:auto;border-radius:14px}
+  .story-media,.story-media img{height:30dvh;min-height:190px;max-height:260px}
+  .story-content{padding:22px 20px}
+  .story-content h2{font-size:clamp(32px,9vw,44px)}
+  .story-actions .btn{width:100%}
+  .video-modal{
+    width:100vw!important;
+    max-width:none!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+  }
+  .video-stage{
+    width:100%!important;
+    min-height:200px!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+  }
+  .video-close{top:8px;right:8px}
+}
+@media(max-width:360px){
+  .hero h1{font-size:clamp(34px,10.5vw,39px)}
+  .hero-proof{font-size:8px}
+  .work-card-large{min-height:390px}
+  .showreel-card:after{font-size:7px}
+}
+@media(orientation:landscape) and (max-height:500px){
+  .video-modal{width:min(96vw,calc(90dvh * 16 / 9))!important;max-height:94dvh!important}
+  .video-stage{min-height:0!important;max-height:94dvh!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .showreel-card img,.showreel-play-icon{transition:none}
+}

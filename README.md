@@ -45,6 +45,19 @@ Isso evita armazenar arquivos grandes no Supabase e mantém o site leve. O uploa
 - WhatsApp: +55 15 99741-1289
 - Região exibida: Cerquilho — SP e região
 
+## Checklist de entrega ao Henrique
+
+A versão publicada usa o Supabase para atualizar o conteúdo sem alterar o código. Antes de apresentar como entrega final:
+
+- [ ] Conferir no celular e no computador os três vídeos do portfólio e se o YouTube permite incorporação.
+- [ ] Substituir qualquer capa genérica e validar a foto de perfil original, com autorização de uso.
+- [ ] Cadastrar o showreel principal no painel, se Henrique fornecer um vídeo de apresentação; enquanto estiver vazio, a seção permanece oculta.
+- [ ] Abrir um orçamento de teste e confirmar que a conversa correta aparece no WhatsApp do Henrique, sem enviar mensagem indevidamente.
+- [ ] Revisar textos, serviços, região atendida, Instagram e permissões de administrador com Henrique.
+- [ ] Aprovar a revisão visual em telas pequenas e grandes antes de mesclar esta branch com `main`.
+
+O painel está em `/admin.html`; não coloque senhas nem chaves secretas no repositório.
+
 ## Qualidade
 
 A workflow `Project quality check` valida arquivos obrigatórios, sintaxe JavaScript, estrutura HTML, acessibilidade básica, referências locais, CSS, manifest, sitemap, mídia, integração de vídeo, ausência de segredos e requisitos de segurança do CMS.
