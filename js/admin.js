@@ -139,10 +139,6 @@
     q('#logout-btn')?.addEventListener('click', logout);
     q('#unauthorized-logout')?.addEventListener('click', logout);
     saveBtn?.addEventListener('click', saveConfig);
-    q('#export-btn')?.addEventListener('click', exportConfig);
-    q('#import-input')?.addEventListener('change', importConfig);
-    q('#reset-content-btn')?.addEventListener('click', reloadSavedConfig);
-    q('#refresh-history-btn')?.addEventListener('click', loadHistory);
     q('#add-admin-btn')?.addEventListener('click', openAdminDialog);
     q('#admin-cancel-btn')?.addEventListener('click', () => q('#admin-dialog')?.close());
     q('#admin-form')?.addEventListener('submit', addAdmin);
@@ -308,7 +304,7 @@
 
     showOnly('dashboard');
     await loadConfig();
-    await Promise.all([loadAdmins(), loadHistory()]);
+    await loadAdmins();
   }
 
   async function loadConfig() {
@@ -349,7 +345,6 @@
   }
 
   function updateStats() {
-    q('#stat-revision').textContent = revision || '—';
     q('#stat-services').textContent = getPath(config, 'services.items')?.length ?? 0;
     q('#stat-projects').textContent = getPath(config, 'portfolio.items')?.length ?? 0;
     q('#stat-faqs').textContent = getPath(config, 'faq.items')?.length ?? 0;
@@ -485,6 +480,13 @@
   }
 
   async function onDynamicClick(event) {
+    const shortcut = event.target.closest('[data-open-panel]');
+    if (shortcut) {
+      const destination = shortcut.dataset.openPanel;
+      if (q('.nav-item[data-panel="' + cssEscape(destination) + '"]')) activatePanel(destination);
+      return;
+    }
+
     const addString = event.target.closest('[data-add-string]');
     if (addString) {
       const path = addString.dataset.addString;
@@ -552,12 +554,6 @@
       const list = getPath(config, previewObject.dataset.previewObject);
       const item = Array.isArray(list) ? list[Number(previewObject.dataset.index)] : null;
       openMediaPreview(item?.[previewObject.dataset.key]);
-      return;
-    }
-
-    const restore = event.target.closest('[data-restore-revision]');
-    if (restore) {
-      await restoreRevision(Number(restore.dataset.restoreRevision));
       return;
     }
 
@@ -652,42 +648,6 @@
     renderAll();
     setDirty(false);
     showStatus('Publicado com sucesso. O site já pode carregar a nova versão.', 'success');
-    await loadHistory();
-  }
-
-  function exportConfig() {
-    if (!config) return;
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'stoski-films-config-rev-' + revision + '.json';
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function importConfig(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    if (!file) return;
-    try {
-      const parsed = JSON.parse(await file.text());
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('JSON inválido.');
-      config = parsed;
-      renderAll();
-      markDirty();
-      showStatus('Configuração importada. Revise e clique em “Salvar e publicar”.', 'success');
-    } catch (error) {
-      showStatus('Não foi possível importar: ' + error.message, 'error');
-    }
-  }
-
-  async function reloadSavedConfig() {
-    if (!window.confirm('Descartar todas as alterações que ainda não foram publicadas?')) return;
-    config = deepClone(savedConfig);
-    renderAll();
-    setDirty(false);
-    showStatus('Alterações locais descartadas.', 'success');
   }
 
   async function uploadFile(file, targetPath, objectMeta = null) {
@@ -867,54 +827,6 @@
     }
 
     dialog.showModal();
-  }
-
-  async function loadHistory() {
-    if (!currentAdmin) return;
-    const list = q('#history-list');
-    list.innerHTML = '<p class="empty">Carregando histórico…</p>';
-
-    const { data, error } = await client
-      .from('stoski_revisions')
-      .select('id,config_revision,saved_at,saved_by')
-      .order('id', { ascending: false })
-      .limit(40);
-
-    if (error) {
-      list.innerHTML = '<p class="empty">Não foi possível carregar o histórico.</p>';
-      return;
-    }
-
-    if (!data?.length) {
-      list.innerHTML = '<p class="empty">O histórico aparecerá após o primeiro novo salvamento.</p>';
-      return;
-    }
-
-    list.innerHTML = data.map(item =>
-      '<article class="history-item">' +
-        '<div><strong>Revisão ' + esc(item.config_revision) + '</strong><span>' + esc(formatDate(item.saved_at)) + '</span><small>' + esc(item.saved_by || 'sistema') + '</small></div>' +
-        '<button class="btn small" type="button" data-restore-revision="' + item.id + '">Restaurar</button>' +
-      '</article>'
-    ).join('');
-  }
-
-  async function restoreRevision(id) {
-    if (!window.confirm('Restaurar esta versão? A configuração atual continuará salva no histórico.')) return;
-    const { data, error } = await client
-      .from('stoski_revisions')
-      .select('data,config_revision')
-      .eq('id', id)
-      .single();
-
-    if (error || !data?.data) {
-      showStatus('Não foi possível recuperar essa versão.', 'error');
-      return;
-    }
-
-    config = deepClone(data.data);
-    renderAll();
-    markDirty();
-    showStatus('Versão ' + data.config_revision + ' carregada. Clique em “Salvar e publicar” para confirmar.', 'success', 7000);
   }
 
   async function loadAdmins() {
