@@ -22,6 +22,8 @@
   const globalStatus = q('#global-status');
   const saveIndicator = q('#save-indicator');
   const saveBtn = q('#save-btn');
+  const mobileSaveBtn = q('#mobile-save-btn');
+  const mobileSaveBar = q('#mobile-save-bar');
 
   let currentUser = null;
   let currentAdmin = null;
@@ -94,6 +96,9 @@
       saveIndicator.classList.toggle('dirty', dirty);
     }
     if (saveBtn) saveBtn.disabled = !dirty || !currentAdmin;
+    if (mobileSaveBtn) mobileSaveBtn.disabled = !dirty || !currentAdmin;
+    if (mobileSaveBar) mobileSaveBar.hidden = !dirty;
+    document.body.classList.toggle('has-pending-changes', dirty);
   }
 
   function markDirty() {
@@ -139,6 +144,15 @@
     q('#logout-btn')?.addEventListener('click', logout);
     q('#unauthorized-logout')?.addEventListener('click', logout);
     saveBtn?.addEventListener('click', saveConfig);
+    mobileSaveBtn?.addEventListener('click', saveConfig);
+    q('#toggle-password')?.addEventListener('click', () => {
+      const field = q('#login-password');
+      const button = q('#toggle-password');
+      const showing = field.type === 'password';
+      field.type = showing ? 'text' : 'password';
+      button.textContent = showing ? 'Ocultar senha' : 'Mostrar senha';
+      button.setAttribute('aria-pressed', String(showing));
+    });
     q('#add-admin-btn')?.addEventListener('click', openAdminDialog);
     q('#admin-cancel-btn')?.addEventListener('click', () => q('#admin-dialog')?.close());
     q('#admin-form')?.addEventListener('submit', addAdmin);
@@ -408,12 +422,14 @@
         return '<article class="repeat-card portfolio-editor">' + controls +
           '<span class="card-index">' + String(index + 1).padStart(2, '0') + '</span>' +
           '<div class="form-grid two">' +
+            objectInput(path, index, 'title', 'Nome do trabalho', item.title) +
             objectInput(path, index, 'category', 'Categoria', item.category) +
-            objectInput(path, index, 'title', 'Título', item.title) +
-            objectInput(path, index, 'subtitle', 'Subtítulo', item.subtitle) +
-            objectInput(path, index, 'id', 'ID', item.id || String(index + 1)) +
           '</div>' +
-          objectTextarea(path, index, 'story', 'Descrição completa', item.story, 4) +
+          objectTextarea(path, index, 'story', 'Descrição do trabalho', item.story, 4) +
+          '<details class="advanced-fields"><summary>Mais detalhes (opcional)</summary><div class="form-grid two">' +
+            objectInput(path, index, 'subtitle', 'Subtítulo', item.subtitle) +
+            objectInput(path, index, 'id', 'Identificador do projeto', item.id || String(index + 1)) +
+          '</div></details>' +
           '<div class="upload-field compact">' +
             '<div><span>Imagem de capa</span><small>Essa imagem aparece antes do vídeo.</small></div>' +
             '<input type="text" value="' + esc(item.image || '') + '" data-object-path="' + esc(path) + '" data-index="' + index + '" data-key="image">' +
@@ -503,6 +519,7 @@
 
     const removeString = event.target.closest('[data-remove-string]');
     if (removeString) {
+      if (!window.confirm('Excluir esta opção do formulário?')) return;
       const list = getPath(config, removeString.dataset.listPath);
       list?.splice(Number(removeString.dataset.index), 1);
       renderStringList(q('[data-string-list="' + cssEscape(removeString.dataset.listPath) + '"]'));
@@ -526,6 +543,7 @@
     const removeItem = event.target.closest('[data-remove-item]');
     if (removeItem) {
       const path = removeItem.dataset.listPath;
+      if (!window.confirm('Excluir este item? Ele só será removido do site após salvar e publicar.')) return;
       const list = getPath(config, path);
       list?.splice(Number(removeItem.dataset.index), 1);
       renderObjectList(q('[data-object-list="' + cssEscape(path) + '"]'));
@@ -624,7 +642,9 @@
     }
 
     saveBtn.disabled = true;
+    if (mobileSaveBtn) mobileSaveBtn.disabled = true;
     saveBtn.textContent = 'Publicando…';
+    if (mobileSaveBtn) mobileSaveBtn.textContent = 'Publicando…';
     showStatus('Salvando e publicando alterações…', 'info', 0);
 
     const { data, error } = await client
@@ -635,10 +655,12 @@
       .single();
 
     saveBtn.textContent = 'Salvar e publicar';
+    if (mobileSaveBtn) mobileSaveBtn.textContent = 'Salvar e publicar';
 
     if (error) {
       showStatus('Falha ao salvar: ' + error.message, 'error', 0);
       saveBtn.disabled = false;
+      if (mobileSaveBtn) mobileSaveBtn.disabled = false;
       return;
     }
 
@@ -917,6 +939,8 @@
     qa('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.panel === name));
     qa('.panel').forEach(panel => panel.classList.toggle('active', panel.dataset.panelId === name));
     const active = q('.nav-item[data-panel="' + cssEscape(name) + '"]');
+    const moreMenu = active?.closest('.nav-more');
+    if (moreMenu) moreMenu.open = true;
     q('#panel-title').textContent = active?.lastChild?.textContent.trim() || active?.textContent.trim() || 'Painel';
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
