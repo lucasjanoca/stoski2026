@@ -184,5 +184,5 @@ jobs:
           grep -q 'js/cms.js?v=20261103-mobile' index.html
           grep -q 'js/main.js?v=20261103-mobile' index.html
           grep -q 'css/polish.css?v=20261103-mobile' index.html
-          grep -q 'js/admin.js?v=20261103-painel-cliente' admin.html
-          grep -q 'css/admin.css?v=20261103-painel-cliente' admin.html
+          grep -q 'js/admin.js?v=20261107-painel-premium' admin.html
+          grep -q 'css/admin.css?v=20261107-painel-premium' admin.html
